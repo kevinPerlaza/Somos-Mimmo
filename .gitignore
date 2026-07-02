@@ -1,0 +1,18 @@
+node_modules/
+.env
+*.log
+dist/
+data/mimmo.db
+data/mimmo.db-wal
+data/mimmo.db-shm
+data/content.json.migrated
+
+# Archivos multimedia grandes (no subir al repo)
+public/uploads/
+WhatsApp*
+carucel.mp4
+logo2.avif
+LEGO_logo.svg.webp
+limpia po.jpg
+logo.png
+!public/assets/logo.png

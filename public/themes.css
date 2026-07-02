@@ -1,0 +1,858 @@
+/* ==========================================================================
+   TEMAS — se activan con data-theme en <html>
+   - classic       : verde profesional (definido en styles.css)
+   - fresh         : colores vivos, formas organicas
+   - glass         : glassmorphism, blobs orgánicos, efecto cristal
+   - neo           : neobrutalism suave, bordes gruesos, sombras duras
+   - chile         : Fiestas Patrias de Chile (rojo, blanco, azul)
+   - navidad       : Navidad y Año Nuevo (rojo y dorado nevado)
+   ========================================================================== */
+
+/* =======================  TEMA FRESH  ======================= */
+[data-theme="fresh"] {
+  --brand-primary: #06a17a;
+  --brand-accent: #ff5a3c;
+  --accent-dark: #e7472b;
+  --bg: #fffdf7;
+  --bg-alt: #eafff6;
+  --surface: #ffffff;
+  --text: #10241d;
+  --muted: #5a7068;
+  --border: #d6f0e6;
+  --header-bg: rgba(255, 253, 247, 0.8);
+  --radius: 30px;
+  --shadow: 0 28px 60px -26px rgba(6, 161, 122, 0.45);
+  --font-head: "Poppins", "Inter", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+[data-theme="fresh"][data-mode="dark"] {
+  --bg: #07140f;
+  --bg-alt: #0b1f18;
+  --surface: #0f261d;
+  --text: #eafff6;
+  --muted: #9fc9ba;
+  --border: #1c3b30;
+  --header-bg: rgba(7, 20, 15, 0.8);
+}
+[data-theme="fresh"] body {
+  background:
+    radial-gradient(700px 500px at 8% 2%, rgba(6,161,122,0.18), transparent 60%),
+    radial-gradient(680px 520px at 96% 8%, rgba(255,90,60,0.16), transparent 58%),
+    radial-gradient(620px 600px at 50% 108%, rgba(255,196,0,0.16), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+}
+[data-theme="fresh"] .hero-text h1 { font-size: clamp(2.6rem, 7vw, 5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; }
+[data-theme="fresh"] .section-head h2 { font-size: clamp(2.1rem, 5.5vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+[data-theme="fresh"] .eyebrow { font-size: 0.85rem; letter-spacing: 0.16em; }
+[data-theme="fresh"] .btn { border-radius: 999px; font-weight: 700; }
+[data-theme="fresh"] .btn-accent { box-shadow: 0 14px 26px -10px var(--brand-accent); }
+[data-theme="fresh"] .service-icon { border-radius: 50% 40% 55% 45%; }
+[data-theme="fresh"] .service-card,
+[data-theme="fresh"] .testimonial-card,
+[data-theme="fresh"] .blog-card,
+[data-theme="fresh"] .faq-item,
+[data-theme="fresh"] .quote-card { border-radius: 34px 14px 34px 14px; border: 2px solid var(--border); }
+[data-theme="fresh"] .plan-card { border-radius: 14px 34px 14px 34px; border: 2px solid var(--border); }
+[data-theme="fresh"] .ba-card { border-radius: 30px; }
+@media (min-width: 760px) {
+  [data-theme="fresh"] .services-grid .service-card:nth-child(even) { transform: translateY(26px); }
+  [data-theme="fresh"] .services-grid .service-card:hover { transform: translateY(-6px); }
+  [data-theme="fresh"] .services-grid .service-card:nth-child(even):hover { transform: translateY(20px); }
+  [data-theme="fresh"] .plans-grid .plan-card:nth-child(odd) { transform: translateY(20px); }
+  [data-theme="fresh"] .plans-grid .plan-card:hover { transform: translateY(-6px); }
+  [data-theme="fresh"] .plans-grid .plan-card:nth-child(odd):hover { transform: translateY(14px); }
+}
+[data-theme="fresh"] .hero { position: relative; }
+[data-theme="fresh"] .hero::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 60px;
+  background: var(--bg-alt);
+  -webkit-mask: radial-gradient(28px at 28px 0, #0000 98%, #000) -28px 100%/56px 100% repeat-x;
+  mask: radial-gradient(28px at 28px 0, #0000 98%, #000) -28px 100%/56px 100% repeat-x;
+  z-index: 4;
+}
+[data-theme="fresh"] .hero.has-bg::after { display: none; }
+[data-theme="fresh"] .section-contact { background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)); }
+[data-theme="fresh"] .section-head h2, [data-theme="fresh"] .about-text h2 { color: var(--brand-primary); }
+[data-theme="fresh"][data-mode="dark"] .section-head h2, [data-theme="fresh"][data-mode="dark"] .about-text h2 { color: var(--text); }
+
+
+/* =======================  TEMA GLASS (Glassmorphism)  =======================
+   Paneles de cristal esmerilado sobre fondos con gradientes orgánicos.
+   Profundidad con capas, blobs decorativos, bordes translúcidos.
+   ========================================================================== */
+[data-theme="glass"] {
+  --brand-primary: #0d9488;
+  --brand-accent: #f472b6;
+  --accent-dark: #db2777;
+  --bg: #0f172a;
+  --bg-alt: #1e293b;
+  --surface: rgba(30, 41, 59, 0.6);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --border: rgba(148, 163, 184, 0.15);
+  --header-bg: rgba(15, 23, 42, 0.7);
+  --radius: 24px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --font-head: "Poppins", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --glass-bg: rgba(30, 41, 59, 0.55);
+  --glass-border: rgba(148, 163, 184, 0.18);
+  --glass-blur: 16px;
+}
+[data-theme="glass"][data-mode="dark"] {
+  --bg: #020617;
+  --bg-alt: #0f172a;
+  --surface: rgba(15, 23, 42, 0.6);
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --border: rgba(100, 116, 139, 0.12);
+  --header-bg: rgba(2, 6, 23, 0.75);
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(100, 116, 139, 0.15);
+}
+/* Modo claro para glass */
+[data-theme="glass"][data-mode="light"] {
+  --bg: #f0f9ff;
+  --bg-alt: #e0f2fe;
+  --surface: rgba(255, 255, 255, 0.6);
+  --text: #0f172a;
+  --muted: #475569;
+  --border: rgba(14, 165, 233, 0.15);
+  --header-bg: rgba(240, 249, 255, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(14, 165, 233, 0.2);
+  --shadow: 0 8px 32px rgba(14, 165, 233, 0.12);
+}
+/* Fondo con orbes/blobs animados */
+[data-theme="glass"] body {
+  background: var(--bg);
+  position: relative;
+  overflow-x: hidden;
+}
+[data-theme="glass"] body::before,
+[data-theme="glass"] body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  z-index: -1;
+  animation: glass-float 20s ease-in-out infinite alternate;
+}
+[data-theme="glass"] body::before {
+  width: 600px; height: 600px;
+  top: -10%; left: -5%;
+  background: radial-gradient(circle, rgba(13,148,136,0.4), transparent 70%);
+}
+[data-theme="glass"] body::after {
+  width: 500px; height: 500px;
+  bottom: -8%; right: -5%;
+  background: radial-gradient(circle, rgba(244,114,182,0.35), transparent 70%);
+  animation-delay: -10s;
+}
+@keyframes glass-float {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(30px, -20px) scale(1.05); }
+  100% { transform: translate(-20px, 15px) scale(0.95); }
+}
+/* Header glassmorphism */
+[data-theme="glass"] .site-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+}
+/* Cards de servicio, planes, testimonios = paneles de cristal */
+[data-theme="glass"] .service-card,
+[data-theme="glass"] .plan-card,
+[data-theme="glass"] .testimonial-card,
+[data-theme="glass"] .blog-card,
+[data-theme="glass"] .faq-item,
+[data-theme="glass"] .quote-card,
+[data-theme="glass"] .booking-form,
+[data-theme="glass"] .contact-form {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+[data-theme="glass"] .service-card:hover,
+[data-theme="glass"] .plan-card:hover,
+[data-theme="glass"] .testimonial-card:hover,
+[data-theme="glass"] .blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+/* Plan destacado con borde glowing */
+[data-theme="glass"] .plan-card.featured {
+  border: 1px solid rgba(244,114,182,0.4);
+  box-shadow: 0 0 20px rgba(244,114,182,0.15), 0 8px 32px rgba(0,0,0,0.15);
+}
+[data-theme="glass"] .plan-badge { background: var(--brand-accent); color: #fff; }
+/* Iconos con fondo cristal */
+[data-theme="glass"] .service-icon {
+  background: rgba(13, 148, 136, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(13, 148, 136, 0.3);
+  border-radius: 16px;
+}
+/* Tipografía luminosa */
+[data-theme="glass"] .hero-text h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="glass"] .section-head h2 {
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text);
+}
+[data-theme="glass"] .eyebrow {
+  color: var(--brand-accent);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+/* Botones con glow */
+[data-theme="glass"] .btn-accent {
+  background: linear-gradient(135deg, var(--brand-accent), #a855f7);
+  box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4);
+  border: none;
+  color: #fff;
+}
+[data-theme="glass"] .btn-accent:hover {
+  box-shadow: 0 6px 30px rgba(244, 114, 182, 0.6);
+  transform: translateY(-2px);
+}
+[data-theme="glass"] .btn-ghost {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+}
+[data-theme="glass"] .btn-ghost:hover {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: var(--brand-primary);
+}
+/* Secciones alternadas */
+[data-theme="glass"] .section-alt {
+  background: rgba(0, 0, 0, 0.05);
+}
+[data-theme="glass"][data-mode="dark"] .section-alt,
+[data-theme="glass"] .section-alt {
+  background: rgba(0, 0, 0, 0.15);
+}
+[data-theme="glass"][data-mode="light"] .section-alt {
+  background: rgba(14, 165, 233, 0.04);
+}
+/* Contacto con gradiente */
+[data-theme="glass"] .section-contact {
+  background: linear-gradient(135deg, rgba(13,148,136,0.9), rgba(168,85,247,0.85));
+}
+/* Wave divider entre hero y contenido */
+[data-theme="glass"] .hero { position: relative; overflow: visible; }
+[data-theme="glass"] .hero::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -40px;
+  height: 80px;
+  background: var(--bg);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 80'%3E%3Cpath d='M0,40 C300,80 600,0 900,40 C1050,60 1150,50 1200,40 L1200,80 L0,80Z' fill='%23000'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 80'%3E%3Cpath d='M0,40 C300,80 600,0 900,40 C1050,60 1150,50 1200,40 L1200,80 L0,80Z' fill='%23000'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  z-index: 4;
+  pointer-events: none;
+}
+[data-theme="glass"] .hero.has-bg::after { display: none; }
+/* Footer sutil */
+[data-theme="glass"] .site-footer {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
+}
+/* Swiper / carousel con cristal */
+[data-theme="glass"] .mainSwiper {
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+}
+/* Scroll-driven reveal: tarjetas entran al viewport */
+@supports (animation-timeline: view()) {
+  [data-theme="glass"] .service-card,
+  [data-theme="glass"] .plan-card,
+  [data-theme="glass"] .testimonial-card,
+  [data-theme="glass"] .blog-card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: glass-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+}
+@keyframes glass-reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Orbe decorativo extra (tercer blob) */
+[data-theme="glass"] .hero::before {
+  content: "";
+  position: absolute;
+  width: 350px; height: 350px;
+  top: 20%; right: 10%;
+  background: radial-gradient(circle, rgba(168,85,247,0.3), transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: -1;
+  animation: glass-float 15s ease-in-out infinite alternate-reverse;
+}
+
+
+/* =======================  TEMA NEO (Neobrutalism Soft)  =======================
+   Bordes gruesos, sombras duras (sin blur), tipografía pesada,
+   colores vibrantes pero controlados. Formas geométricas con personalidad.
+   ========================================================================== */
+[data-theme="neo"] {
+  --brand-primary: #1a1a2e;
+  --brand-accent: #ff6b35;
+  --accent-dark: #e55a2b;
+  --bg: #fffef5;
+  --bg-alt: #fff8e7;
+  --surface: #ffffff;
+  --text: #1a1a2e;
+  --muted: #4a4a5a;
+  --border: #1a1a2e;
+  --header-bg: rgba(255, 254, 245, 0.95);
+  --radius: 12px;
+  --shadow: 5px 5px 0 #1a1a2e;
+  --font-head: "Poppins", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --neo-shadow: 5px 5px 0 #1a1a2e;
+  --neo-shadow-accent: 5px 5px 0 var(--brand-accent);
+  --neo-border: 2.5px solid #1a1a2e;
+}
+[data-theme="neo"][data-mode="dark"] {
+  --bg: #1a1a2e;
+  --bg-alt: #16213e;
+  --surface: #0f3460;
+  --text: #fffef5;
+  --muted: #b8b8cc;
+  --border: #fffef5;
+  --header-bg: rgba(26, 26, 46, 0.95);
+  --shadow: 5px 5px 0 rgba(255,254,245,0.3);
+  --neo-shadow: 5px 5px 0 rgba(255,254,245,0.25);
+  --neo-shadow-accent: 5px 5px 0 var(--brand-accent);
+  --neo-border: 2.5px solid rgba(255,254,245,0.6);
+}
+/* Fondo con patrón geométrico sutil */
+[data-theme="neo"] body {
+  background:
+    radial-gradient(circle at 20% 50%, rgba(255,107,53,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(26,26,46,0.04) 0%, transparent 40%),
+    var(--bg);
+}
+[data-theme="neo"][data-mode="dark"] body {
+  background:
+    radial-gradient(circle at 20% 50%, rgba(255,107,53,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(15,52,96,0.3) 0%, transparent 40%),
+    var(--bg);
+}
+/* Header con borde inferior grueso */
+[data-theme="neo"] .site-header {
+  border-bottom: 3px solid var(--border);
+  backdrop-filter: none;
+  box-shadow: 0 3px 0 var(--border);
+}
+/* Tarjetas neobrutales */
+[data-theme="neo"] .service-card,
+[data-theme="neo"] .plan-card,
+[data-theme="neo"] .testimonial-card,
+[data-theme="neo"] .blog-card,
+[data-theme="neo"] .faq-item {
+  border: var(--neo-border);
+  border-radius: var(--radius);
+  box-shadow: var(--neo-shadow);
+  background: var(--surface);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+[data-theme="neo"] .service-card:hover,
+[data-theme="neo"] .plan-card:hover,
+[data-theme="neo"] .testimonial-card:hover,
+[data-theme="neo"] .blog-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--border);
+}
+/* Plan destacado con sombra de color */
+[data-theme="neo"] .plan-card.featured {
+  border-color: var(--brand-accent);
+  box-shadow: var(--neo-shadow-accent);
+}
+[data-theme="neo"] .plan-card.featured:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--brand-accent);
+}
+[data-theme="neo"] .plan-badge {
+  background: var(--brand-accent);
+  color: #fff;
+  border: 2px solid var(--border);
+  box-shadow: 2px 2px 0 var(--border);
+  border-radius: 6px;
+}
+/* Quote card y booking con borde */
+[data-theme="neo"] .quote-card,
+[data-theme="neo"] .booking-form,
+[data-theme="neo"] .contact-form {
+  border: var(--neo-border);
+  border-radius: var(--radius);
+  box-shadow: var(--neo-shadow);
+}
+/* Iconos geométricos */
+[data-theme="neo"] .service-icon {
+  background: var(--bg-alt);
+  border: var(--neo-border);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 var(--border);
+}
+/* Tipografía pesada y expresiva */
+[data-theme="neo"] .hero-text h1 {
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text);
+  text-shadow: 3px 3px 0 rgba(255,107,53,0.2);
+}
+[data-theme="neo"] .section-head h2 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+[data-theme="neo"] .eyebrow {
+  color: var(--brand-accent);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  background: var(--bg-alt);
+  padding: 4px 12px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  display: inline-block;
+}
+/* Botones con presión */
+[data-theme="neo"] .btn {
+  border: 2.5px solid var(--border);
+  border-radius: 8px;
+  font-weight: 700;
+  position: relative;
+}
+[data-theme="neo"] .btn-accent {
+  background: var(--brand-accent);
+  color: #fff;
+  box-shadow: 4px 4px 0 var(--border);
+}
+[data-theme="neo"] .btn-accent:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--border);
+}
+[data-theme="neo"] .btn-accent:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--border);
+}
+[data-theme="neo"] .btn-ghost {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 4px 4px 0 var(--border);
+}
+[data-theme="neo"] .btn-ghost:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--border);
+  background: var(--bg-alt);
+}
+/* Secciones con fondo ligeramente diferente */
+[data-theme="neo"] .section-alt {
+  background: var(--bg-alt);
+  border-top: 2px dashed var(--border);
+  border-bottom: 2px dashed var(--border);
+}
+/* Contacto bold */
+[data-theme="neo"] .section-contact {
+  background: var(--brand-accent);
+  border-top: 3px solid var(--border);
+}
+[data-theme="neo"] .section-contact .eyebrow,
+[data-theme="neo"] .section-contact h2,
+[data-theme="neo"] .section-contact p { color: #fff; }
+[data-theme="neo"] .section-contact .eyebrow { background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.3); }
+/* Carousel con marco */
+[data-theme="neo"] .mainSwiper {
+  border: 3px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--border);
+}
+/* Footer con borde top grueso */
+[data-theme="neo"] .site-footer {
+  border-top: 3px solid var(--border);
+  background: var(--bg-alt);
+}
+/* Separador zigzag entre hero y contenido */
+[data-theme="neo"] .hero { position: relative; overflow: visible; }
+[data-theme="neo"] .hero::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -15px;
+  height: 30px;
+  background: var(--bg-alt);
+  -webkit-mask: linear-gradient(135deg, var(--border) 33.33%, transparent 33.33%) 0 0/30px 100%,
+               linear-gradient(225deg, var(--border) 33.33%, transparent 33.33%) 0 0/30px 100%;
+  mask: repeating-linear-gradient(-45deg, #000 0 10px, transparent 10px 20px);
+  opacity: 0.15;
+  z-index: 4;
+  pointer-events: none;
+}
+[data-theme="neo"] .hero.has-bg::after { display: none; }
+/* Scroll reveal para neo */
+@supports (animation-timeline: view()) {
+  [data-theme="neo"] .service-card,
+  [data-theme="neo"] .plan-card,
+  [data-theme="neo"] .testimonial-card,
+  [data-theme="neo"] .blog-card {
+    opacity: 0;
+    transform: translateY(20px) rotate(-1deg);
+    animation: neo-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+@keyframes neo-reveal {
+  to { opacity: 1; transform: translateY(0) rotate(0deg); }
+}
+/* Efecto "sticker" en hover (ligera rotación) */
+@media (min-width: 760px) {
+  [data-theme="neo"] .services-grid .service-card:nth-child(odd):hover { transform: translate(-2px,-2px) rotate(-0.5deg); }
+  [data-theme="neo"] .services-grid .service-card:nth-child(even):hover { transform: translate(-2px,-2px) rotate(0.5deg); }
+}
+/* Inputs con estilo neo */
+[data-theme="neo"] input,
+[data-theme="neo"] select,
+[data-theme="neo"] textarea {
+  border: 2px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: 3px 3px 0 var(--border);
+}
+[data-theme="neo"] input:focus,
+[data-theme="neo"] select:focus,
+[data-theme="neo"] textarea:focus {
+  box-shadow: 3px 3px 0 var(--brand-accent);
+  border-color: var(--brand-accent) !important;
+  outline: none;
+}
+
+
+/* =======================  TEMA FIESTAS PATRIAS (Chile 🇨🇱)  =======================
+   Colores de la bandera: rojo #D52B1E, blanco #FFFFFF, azul #0039A6
+   Decoraciones: banderas, estrellas, confeti, empanadas y volantines
+   ========================================================================== */
+[data-theme="chile"] {
+  --brand-primary: #0039A6;
+  --brand-accent: #D52B1E;
+  --accent-dark: #a82218;
+  --bg: #fdfbf7;
+  --bg-alt: #f5f0e8;
+  --surface: #ffffff;
+  --text: #1a1020;
+  --muted: #5a5060;
+  --border: #d4c4a0;
+  --header-bg: rgba(253, 251, 247, 0.92);
+  --green-100: #f5f0e8;
+  --green-900: #0a1a3a;
+  --green-50: #fdfbf7;
+  --radius: 16px;
+  --shadow: 0 20px 50px -20px rgba(0,57,166,0.3);
+}
+[data-theme="chile"][data-mode="dark"] {
+  --bg: #0a0812;
+  --bg-alt: #10101c;
+  --surface: #161228;
+  --text: #e8e4f0;
+  --muted: #9a90b0;
+  --border: #2a2440;
+  --header-bg: rgba(10, 8, 18, 0.92);
+  --green-900: #06040e;
+}
+/* Franja rojo-blanco en el header (bandera chilena) */
+[data-theme="chile"] .site-header {
+  border-bottom: 0;
+  box-shadow:
+    0 4px 0 0 #D52B1E,
+    0 8px 0 0 #fff,
+    0 12px 0 0 #0039A6;
+}
+/* Fondo con la paleta chilena */
+[data-theme="chile"] body {
+  background:
+    radial-gradient(800px 500px at 5% 0%, rgba(213,43,30,0.18), transparent 55%),
+    radial-gradient(700px 600px at 95% 5%, rgba(0,57,166,0.18), transparent 55%),
+    radial-gradient(900px 700px at 50% 100%, rgba(213,43,30,0.12), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+[data-theme="chile"] .hero-text h1 { color: var(--brand-primary); }
+[data-theme="chile"][data-mode="dark"] .hero-text h1 { color: #e8e4f0; }
+[data-theme="chile"] .eyebrow { color: var(--brand-accent); text-transform: uppercase; letter-spacing: 0.14em; }
+[data-theme="chile"] .btn-accent { background: var(--brand-accent); box-shadow: 0 10px 24px -10px rgba(213,43,30,0.5); }
+[data-theme="chile"] .btn-accent:hover { background: var(--accent-dark); }
+[data-theme="chile"] .section-head h2 { color: var(--brand-primary); }
+[data-theme="chile"][data-mode="dark"] .section-head h2 { color: #e8e4f0; }
+[data-theme="chile"] .service-icon { background: rgba(0,57,166,0.12); color: var(--brand-accent); border: 2px solid rgba(0,57,166,0.4); }
+[data-theme="chile"] .plan-card.featured { border-color: #D52B1E; box-shadow: 0 0 0 3px rgba(213,43,30,0.3), var(--shadow); }
+[data-theme="chile"] .plan-badge { background: #D52B1E; color: #fff; }
+[data-theme="chile"] .section-alt { background: linear-gradient(160deg, rgba(213,43,30,0.05), rgba(0,57,166,0.05)); }
+[data-theme="chile"] .section-contact { background: linear-gradient(135deg, #0039A6, #D52B1E); }
+/* Banner festivo bajo el header */
+[data-theme="chile"] .site-header::before {
+  content: "🇨🇱  ¡Felices Fiestas Patrias!  🇨🇱";
+  display: block;
+  background: #D52B1E;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 5px 0;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  transform: translateY(-100%);
+}
+/* Detalles en tarjetas */
+[data-theme="chile"] .service-card,
+[data-theme="chile"] .testimonial-card {
+  border-top: 3px solid #D52B1E;
+}
+[data-theme="chile"] .plan-card { border-bottom: 3px solid #0039A6; }
+/* Bandera en el footer */
+[data-theme="chile"] .site-footer::before {
+  content: "";
+  display: block;
+  height: 8px;
+  background: linear-gradient(to right, #0039A6 33.3%, #fff 33.3% 66.6%, #D52B1E 66.6%);
+  margin-bottom: 0;
+}
+
+
+/* =======================  TEMA NAVIDAD Y AÑO NUEVO  =======================
+   Paleta: rojo navideño #B22222, dorado #D4AF37, verde pino #1a4a1a, blanco nieve
+   ========================================================================== */
+[data-theme="navidad"] {
+  --brand-primary: #1a4a1a;
+  --brand-accent: #B22222;
+  --accent-dark: #8b1a1a;
+  --bg: #faf7f2;
+  --bg-alt: #f2ece0;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #5a5a5a;
+  --border: #d4af37;
+  --header-bg: rgba(250, 247, 242, 0.92);
+  --green-100: #f2ece0;
+  --green-900: #0e2b0e;
+  --radius: 14px;
+  --shadow: 0 20px 50px -18px rgba(178,34,34,0.3);
+  --xmas-gold: #D4AF37;
+  --xmas-red: #B22222;
+  --xmas-green: #1a4a1a;
+}
+[data-theme="navidad"][data-mode="dark"] {
+  --bg: #0e0e0e;
+  --bg-alt: #141414;
+  --surface: #1c1c1c;
+  --text: #f5f0e8;
+  --muted: #9a9a9a;
+  --border: #3a2e10;
+  --header-bg: rgba(14, 14, 14, 0.92);
+  --green-900: #080808;
+}
+/* Fondo invernal con brillos sutiles */
+[data-theme="navidad"] body {
+  background:
+    radial-gradient(700px 500px at 10% 0%, rgba(26,74,26,0.15), transparent 55%),
+    radial-gradient(600px 500px at 92% 8%, rgba(178,34,34,0.18), transparent 52%),
+    radial-gradient(800px 700px at 50% 105%, rgba(212,175,55,0.18), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+/* Banner festivo */
+[data-theme="navidad"] .topbanner-navidad {
+  display: block;
+  background: linear-gradient(90deg, var(--xmas-green), var(--xmas-red), var(--xmas-green));
+  color: #fff;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 6px 0;
+}
+/* Header con borde dorado */
+[data-theme="navidad"] .site-header {
+  border-bottom: 3px solid var(--xmas-gold);
+}
+[data-theme="navidad"] .eyebrow { color: var(--xmas-red); text-transform: uppercase; letter-spacing: 0.12em; }
+[data-theme="navidad"] .hero-text h1 { color: var(--xmas-green); }
+[data-theme="navidad"][data-mode="dark"] .hero-text h1 { color: #f5f0e8; }
+[data-theme="navidad"] .section-head h2 { color: var(--xmas-green); }
+[data-theme="navidad"][data-mode="dark"] .section-head h2 { color: #f5f0e8; }
+[data-theme="navidad"] .btn-accent { background: var(--xmas-red); box-shadow: 0 10px 24px -10px rgba(178,34,34,0.5); }
+[data-theme="navidad"] .btn-accent:hover { background: var(--accent-dark); }
+/* Borde dorado en tarjetas */
+[data-theme="navidad"] .service-card,
+[data-theme="navidad"] .plan-card,
+[data-theme="navidad"] .testimonial-card { border-top: 3px solid var(--xmas-gold); }
+[data-theme="navidad"] .service-icon { background: rgba(212,175,55,0.15); color: var(--xmas-green); border: 2px solid rgba(212,175,55,0.4); }
+[data-theme="navidad"] .plan-card.featured { border-color: var(--xmas-red); box-shadow: 0 0 0 3px rgba(178,34,34,0.3), var(--shadow); }
+[data-theme="navidad"] .plan-badge { background: var(--xmas-gold); color: #1a1a1a; }
+[data-theme="navidad"] .section-contact { background: linear-gradient(135deg, var(--xmas-green), var(--xmas-red)); }
+/* Franja festiva en el footer */
+[data-theme="navidad"] .site-footer::before {
+  content: "";
+  display: block;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, var(--xmas-red) 0 20px, var(--xmas-gold) 20px 40px, var(--xmas-green) 40px 60px);
+}
+
+
+/* =======================  NIEVE ANIMADA (navidad)  =======================
+   Copos que caen sobre la pagina, solo con CSS + JS mínimo
+   ========================================================================== */
+.snowflake {
+  position: fixed;
+  top: -2em;
+  color: #fff;
+  font-size: 1.2em;
+  user-select: none;
+  pointer-events: none;
+  z-index: 9990;
+  animation: snowfall linear infinite;
+  opacity: 0.85;
+}
+@keyframes snowfall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+  100% { transform: translateY(105vh) rotate(360deg); opacity: 0.2; }
+}
+@media (prefers-reduced-motion: reduce) { .snowflake { animation: none; display: none; } }
+
+
+/* =======================  CONFETI FIESTAS PATRIAS  =======================
+   Tiras de confeti con los colores de la bandera
+   ========================================================================== */
+.confetti-piece {
+  position: fixed;
+  top: -1em;
+  width: 8px;
+  height: 18px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9990;
+  animation: confetti-fall linear infinite;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .confetti-piece { animation: none; display: none; } }
+
+
+/* =======================  FORMAS FESTIVAS EN TARJETAS  ======================= */
+
+/* --- Chile: tarjetas con forma de volantín (bordes asimétricos) y estrella decorativa --- */
+[data-theme="chile"] .service-card,
+[data-theme="chile"] .testimonial-card,
+[data-theme="chile"] .blog-card { border-radius: 4px 24px 4px 24px; position: relative; overflow: visible; }
+[data-theme="chile"] .plan-card { border-radius: 24px 4px 24px 4px; position: relative; overflow: visible; }
+[data-theme="chile"] .service-card::before,
+[data-theme="chile"] .plan-card::before,
+[data-theme="chile"] .testimonial-card::before {
+  content: "★";
+  position: absolute;
+  top: -10px; right: -10px;
+  width: 28px; height: 28px;
+  background: #D52B1E;
+  color: #fff;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(213,43,30,0.4);
+  z-index: 2;
+}
+/* Borde diagonal decorativo */
+[data-theme="chile"] .quote-card,
+[data-theme="chile"] .booking-form { border-radius: 24px 4px 24px 4px; border: 2px solid var(--border); position: relative; }
+[data-theme="chile"] .quote-card::before,
+[data-theme="chile"] .booking-form::before {
+  content: "🇨🇱";
+  position: absolute;
+  top: -12px; left: 16px;
+  font-size: 1.3rem;
+  z-index: 2;
+}
+
+/* --- Navidad: tarjetas con gorrito navideño en la esquina superior --- */
+[data-theme="navidad"] .service-card,
+[data-theme="navidad"] .plan-card,
+[data-theme="navidad"] .testimonial-card,
+[data-theme="navidad"] .blog-card { position: relative; overflow: visible; border-radius: 16px; }
+[data-theme="navidad"] .service-card::before,
+[data-theme="navidad"] .plan-card::before,
+[data-theme="navidad"] .testimonial-card::before,
+[data-theme="navidad"] .blog-card::before {
+  content: "";
+  position: absolute;
+  top: -14px; left: 12px;
+  width: 30px; height: 30px;
+  background:
+    radial-gradient(circle at 50% 5%, #fff 3px, transparent 3px),
+    conic-gradient(from 200deg at 50% 100%, #B22222 0deg 160deg, transparent 160deg);
+  border-radius: 50% 50% 4px 4px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+/* Alternar posición del gorro entre izquierda y derecha */
+[data-theme="navidad"] .plan-card::before,
+[data-theme="navidad"] .blog-card::before { left: auto; right: 12px; }
+/* Bordes con ondulación navideña */
+[data-theme="navidad"] .quote-card,
+[data-theme="navidad"] .booking-form {
+  border-radius: 16px;
+  border: 2px solid var(--xmas-gold);
+  position: relative;
+  overflow: visible;
+}
+[data-theme="navidad"] .quote-card::before,
+[data-theme="navidad"] .booking-form::before {
+  content: "🎄";
+  position: absolute;
+  top: -14px; left: 16px;
+  font-size: 1.4rem;
+  z-index: 2;
+}
+[data-theme="navidad"] .quote-card::after,
+[data-theme="navidad"] .booking-form::after {
+  content: "🎁";
+  position: absolute;
+  top: -14px; right: 16px;
+  font-size: 1.4rem;
+  z-index: 2;
+}
+/* Detalles dorados extra: separadores y borde inferior en footer */
+[data-theme="navidad"] .section-head::after {
+  content: "✦ ✦ ✦";
+  display: block;
+  color: var(--xmas-gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  margin-top: 8px;
+  opacity: 0.6;
+}

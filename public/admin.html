@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de administracion · Mimmo</title>
+    <link rel="icon" href="assets/logo.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <!-- Login -->
+    <div class="login-screen" id="loginScreen">
+      <form class="login-card" id="loginForm">
+        <img src="assets/logo.png" alt="Mimmo" />
+        <h1>Panel de administracion</h1>
+        <p>Ingresa tus credenciales para gestionar el sitio.</p>
+        <input type="text" id="username" placeholder="Usuario" autocomplete="username" value="admin" />
+        <input type="password" id="password" placeholder="Contrasena" autocomplete="current-password" />
+        <button type="submit" class="btn btn-accent">Entrar</button>
+        <span class="login-error" id="loginError"></span>
+      </form>
+    </div>
+
+    <!-- App -->
+    <div class="admin-app" id="adminApp" hidden>
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand"><img src="assets/logo.png" alt="Mimmo" /><span>Admin</span></div>
+        <nav class="sidebar-nav">
+          <button class="snav active" data-tab="dashboard">📊 Resumen</button>
+          <button class="snav" data-tab="design">🎨 Diseno</button>
+          <button class="snav" data-tab="carousel">🖼️ Carrusel</button>
+          <button class="snav" data-tab="animations">✨ Animaciones</button>
+          <button class="snav" data-tab="content">📝 Textos y servicios</button>
+          <button class="snav" data-tab="plans">💲 Planes</button>
+          <button class="snav" data-tab="quotecalc">🧮 Cotizador</button>
+          <button class="snav" data-tab="beforeafter">🔄 Antes y despues</button>
+          <button class="snav" data-tab="testimonials">⭐ Testimonios</button>
+          <button class="snav" data-tab="clients">🤝 Clientes</button>
+          <button class="snav" data-tab="videos">🎬 Videos</button>
+          <button class="snav" data-tab="blog">📰 Blog</button>
+          <button class="snav" data-tab="faq">❓ FAQ</button>
+          <button class="snav" data-tab="contact">📞 Contacto</button>
+          <button class="snav" data-tab="bookings">📅 Citas</button>
+          <button class="snav" data-tab="discounts">🏷️ Descuentos</button>
+          <button class="snav" data-tab="email">✉️ Correo</button>
+          <button class="snav owner-only" data-tab="users">👥 Usuarios</button>
+          <button class="snav" data-tab="audit">🕓 Registro</button>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="/" target="_blank" class="btn btn-ghost">Ver sitio</a>
+          <button class="btn btn-ghost" id="logoutBtn">Salir</button>
+        </div>
+      </aside>
+
+      <div class="admin-content">
+        <header class="topbar">
+          <button class="hamburger" id="hamburger">☰</button>
+          <span id="currentUser"></span>
+          <button class="btn btn-ghost notif-trigger" id="toggleNotifs" title="Activar notificaciones">🔔</button>
+          <button class="btn btn-ghost tour-trigger" id="startTour" title="Tour guiado">?</button>
+        </header>
+        <main class="admin-main">
+
+          <!-- ===== Resumen / Dashboard ===== -->
+          <section class="panel active" id="tab-dashboard">
+            <h2>Resumen</h2>
+            <p class="muted">Vista rapida del estado del sitio.</p>
+            <div class="dash-stats" id="dashStats"></div>
+            <div class="two-col">
+              <div class="card">
+                <h3>Proximas citas</h3>
+                <div id="dashUpcoming"></div>
+              </div>
+              <div class="card">
+                <h3>Actividad reciente</h3>
+                <div id="dashActivity"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== Diseno ===== -->
+          <section class="panel" id="tab-design">
+            <h2>Diseno del sitio</h2>
+            <p class="muted">Elige una version de diseno. Puedes rotar entre las 3 para ver cual queda mejor antes de produccion.</p>
+            <div class="theme-grid" id="themeGrid"></div>
+            <div class="card">
+              <h3>Colores de marca</h3>
+              <label class="checkbox"><input type="checkbox" id="useCustomColors" /> Usar colores personalizados (en vez de los del tema)</label>
+              <div class="two-col" id="colorPickers">
+                <label>Color primario<input type="color" id="colorPrimary" /></label>
+                <label>Color de acento<input type="color" id="colorAccent" /></label>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Logo</h3>
+              <div class="logo-preview"><img id="logoPreview" src="assets/logo.png" alt="logo" /></div>
+              <button class="btn btn-ghost" id="pickLogo">Cambiar logo</button>
+              <input type="file" id="logoInput" accept="image/*,.avif,.heic,.heif" hidden />
+              <h4 style="margin-top:18px">Tamaño del logo</h4>
+              <div class="two-col">
+                <label>Header (nav): <strong id="logoHeaderVal"></strong>px<input type="range" id="logoHeaderSize" min="28" max="120" step="2" /></label>
+                <label>Footer: <strong id="logoFooterVal"></strong>px<input type="range" id="logoFooterSize" min="28" max="120" step="2" /></label>
+                <label>Sección "Nosotros": <strong id="logoAboutVal"></strong>px<input type="range" id="logoAboutSize" min="60" max="300" step="5" /></label>
+              </div>
+            </div>
+            <div class="save-bar" id="designSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveDesign">Guardar diseno</button></div>
+          </section>
+
+          <!-- ===== Carrusel ===== -->
+          <section class="panel" id="tab-carousel">
+            <h2>Imagenes del carrusel</h2>
+            <p class="muted">Sube fotos, arrastralas para reordenar y ajusta su tamano.</p>
+            <div class="card settings-card">
+              <h3>Ajustes del carrusel</h3>
+              <div class="settings-row">
+                <label>Alto: <strong id="heightVal"></strong> px<input type="range" id="setHeight" min="280" max="900" step="10" /></label>
+                <label>Velocidad automatica: <strong id="autoplayVal"></strong><input type="range" id="setAutoplay" min="0" max="9000" step="500" /></label>
+                <label class="checkbox"><input type="checkbox" id="setCaptions" /> Mostrar titulos sobre las imagenes</label>
+                <label class="checkbox"><input type="checkbox" id="setBackground" /> Usar el carrusel como fondo del inicio</label>
+              </div>
+            </div>
+            <div class="card upload-card">
+              <h3>Agregar imagen o video</h3>
+              <div class="upload-zone" id="uploadZone">
+                <input type="file" id="imageInput" accept="image/*,video/mp4,video/webm,video/quicktime,.avif,.heic" hidden />
+                <p>Arrastra una imagen/video o <button type="button" class="link" id="pickImage">selecciona un archivo</button></p>
+                <span class="muted">Imagenes se optimizan. Videos MP4/WebM (max 200 MB).</span>
+              </div>
+              <div class="upload-progress" id="uploadProgress" hidden>Subiendo...</div>
+            </div>
+            <div class="slides-grid" id="slidesGrid"></div>
+            <div class="save-bar" id="carouselSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveCarousel">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Animaciones ===== -->
+          <section class="panel" id="tab-animations">
+            <h2>Animaciones decorativas</h2>
+            <p class="muted">Iconos con tematica de limpieza que flotan en los lados del sitio. Puedes elegir cuales mostrar, el estilo de animacion o apagarlas.</p>
+            <div class="card">
+              <label class="checkbox"><input type="checkbox" id="decoEnabled" /> Activar animaciones decorativas</label>
+              <h3>Iconos a mostrar</h3>
+              <div class="deco-choices" id="decoItems"></div>
+            </div>
+            <div class="card">
+              <h3>Estilo</h3>
+              <div class="two-col">
+                <label>Tipo de animacion
+                  <select id="decoAnimation">
+                    <option value="float">Flotar</option>
+                    <option value="sway">Balanceo</option>
+                    <option value="bounce">Rebote</option>
+                    <option value="spin">Girar</option>
+                  </select>
+                </label>
+                <label>Velocidad
+                  <select id="decoSpeed">
+                    <option value="slow">Lenta</option>
+                    <option value="normal">Normal</option>
+                    <option value="fast">Rapida</option>
+                  </select>
+                </label>
+              </div>
+              <label>Opacidad: <strong id="decoOpacityVal"></strong>
+                <input type="range" id="decoOpacity" min="0.1" max="1" step="0.05" />
+              </label>
+            </div>
+            <div class="card">
+              <h3>Efectos del sitio</h3>
+              <label class="checkbox"><input type="checkbox" id="fxReveal" /> Animar elementos al hacer scroll</label>
+              <label class="checkbox"><input type="checkbox" id="fxMicro" /> Microinteracciones (hover en botones e iconos)</label>
+              <div class="two-col">
+                <label>Cursor personalizado
+                  <select id="fxCursor">
+                    <option value="none">Ninguno</option>
+                    <option value="bubble">Burbuja</option>
+                    <option value="sponge">Esponja</option>
+                    <option value="sparkle">Destello</option>
+                    <option value="broom">Escoba</option>
+                  </select>
+                </label>
+                <label>Antes/Despues: interaccion
+                  <select id="fxBaMode">
+                    <option value="slider">Deslizar</option>
+                    <option value="scratch">Frotar para revelar</option>
+                  </select>
+                </label>
+              </div>
+              <p class="muted">El cursor personalizado solo aparece en computadores (no en moviles).</p>
+            </div>
+            <div class="save-bar" id="decoSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveDeco">Guardar animaciones</button></div>
+          </section>
+
+          <!-- ===== Textos y servicios ===== -->
+          <section class="panel" id="tab-content">
+            <h2>Textos y servicios</h2>
+            <div class="card">
+              <h3>Inicio (Hero)</h3>
+              <label>Titulo<input type="text" id="heroTitle" placeholder="Ej: Espacios impecables, manos en las que confiar" /></label>
+              <label>Subtitulo<textarea id="heroSubtitle" rows="3" placeholder="Ej: Cuidamos cada detalle de la limpieza de tu hogar, oficina o local."></textarea></label>
+              <div class="two-col">
+                <label>Boton principal<input type="text" id="heroCtaPrimary" /></label>
+                <label>Boton secundario<input type="text" id="heroCtaSecondary" /></label>
+              </div>
+              <details class="i18n-block"><summary>Version en ingles (opcional)</summary>
+                <p class="muted">Sugerencia: escribe una version natural en ingles del texto del hero. Esto se mostrara cuando el visitante cambie el idioma a EN.</p>
+                <label>Title<input type="text" id="enHeroTitle" placeholder="e.g. Spotless Spaces You Can Trust" /></label>
+                <label>Subtitle<textarea id="enHeroSubtitle" rows="2" placeholder="e.g. We take care of every detail so your home, office, or business shines."></textarea></label>
+              </details>
+            </div>
+            <div class="card">
+              <h3>Quienes somos</h3>
+              <label>Titulo<input type="text" id="aboutTitle" placeholder="Ej: Quienes somos" /></label>
+              <label>Texto<textarea id="aboutBody" rows="5" placeholder="Ej: Somos un equipo comprometido con dejar cada espacio reluciente..."></textarea></label>
+              <label>Puntos destacados (uno por linea)<textarea id="aboutHighlights" rows="4"></textarea></label>
+              <details class="i18n-block"><summary>Version en ingles (opcional)</summary>
+                <p class="muted">Sugerencia: una version corta y clara en ingles de "Quienes somos".</p>
+                <label>Title<input type="text" id="enAboutTitle" placeholder="e.g. Who We Are" /></label>
+                <label>Body<textarea id="enAboutBody" rows="3" placeholder="e.g. We're a professional cleaning team committed to delivering outstanding results with eco-friendly products and trained staff."></textarea></label>
+              </details>
+            </div>
+            <div class="card">
+              <h3>Servicios <span class="muted">(arrastra para reordenar)</span></h3>
+              <div id="servicesEditor" class="reorder-list"></div>
+              <button class="btn btn-ghost" id="addService">+ Agregar servicio</button>
+            </div>
+            <div class="save-bar" id="contentSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveContent">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Planes ===== -->
+          <section class="panel" id="tab-plans">
+            <h2>Planes y precios</h2>
+            <div id="plansEditor" class="reorder-list"></div>
+            <button class="btn btn-ghost" id="addPlan">+ Agregar plan</button>
+            <div class="save-bar" id="plansSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="savePlans">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Cotizador ===== -->
+          <section class="panel" id="tab-quotecalc">
+            <h2>Cotizador instantaneo</h2>
+            <p class="muted">Configura precios para que el visitante calcule un estimado al instante.</p>
+            <div class="card">
+              <label class="checkbox"><input type="checkbox" id="qcEnabled" /> Mostrar el cotizador en el sitio</label>
+              <div class="two-col">
+                <label>Titulo<input type="text" id="qcTitle" /></label>
+                <label>Subtitulo<input type="text" id="qcSubtitle" /></label>
+                <label>Simbolo de moneda<input type="text" id="qcCurrency" placeholder="$" /></label>
+                <label>Etiqueta de cantidad<input type="text" id="qcUnitLabel" placeholder="habitaciones / m2" /></label>
+                <label>Precio por unidad<input type="text" id="qcPricePerUnit" placeholder="15000" /></label>
+              </div>
+              <label>Nota al pie<input type="text" id="qcNote" /></label>
+            </div>
+            <div class="card">
+              <h3>Tipos de espacio (precio base)</h3>
+              <div id="qcSpaces" class="reorder-list"></div>
+              <button class="btn btn-ghost" id="qcAddSpace">+ Agregar tipo</button>
+            </div>
+            <div class="card">
+              <h3>Frecuencias (multiplicador)</h3>
+              <p class="muted">Ej: 1 = precio completo, 0.85 = 15% de descuento.</p>
+              <div id="qcFreqs" class="reorder-list"></div>
+              <button class="btn btn-ghost" id="qcAddFreq">+ Agregar frecuencia</button>
+            </div>
+            <div class="card">
+              <h3>Servicios extra (precio adicional)</h3>
+              <div id="qcExtras" class="reorder-list"></div>
+              <button class="btn btn-ghost" id="qcAddExtra">+ Agregar extra</button>
+            </div>
+            <div class="save-bar" id="quotecalcSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveQuoteCalc">Guardar cotizador</button></div>
+          </section>
+
+          <!-- ===== Antes y despues ===== -->
+          <section class="panel" id="tab-beforeafter">
+            <h2>Antes y despues</h2>
+            <p class="muted">Sube la foto de "antes" y la de "despues" de cada caso.</p>
+            <div id="baEditor"></div>
+            <button class="btn btn-ghost" id="addBa">+ Agregar caso</button>
+            <div class="save-bar" id="baSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveBa">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Testimonios ===== -->
+          <section class="panel" id="tab-testimonials">
+            <h2>Testimonios</h2>
+            <div id="testimonialsEditor" class="reorder-list"></div>
+            <button class="btn btn-ghost" id="addTestimonial">+ Agregar testimonio</button>
+            <div class="save-bar" id="testimonialsSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveTestimonials">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Clientes ===== -->
+          <section class="panel" id="tab-clients">
+            <h2>Clientes / logos</h2>
+            <div id="clientsEditor" class="reorder-list"></div>
+            <button class="btn btn-ghost" id="addClient">+ Agregar cliente</button>
+            <div class="save-bar" id="clientsSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveClients">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Videos ===== -->
+          <section class="panel" id="tab-videos">
+            <h2>Galeria de videos</h2>
+            <div class="card upload-card">
+              <h3>Agregar video</h3>
+              <div class="upload-zone" id="videoZone">
+                <input type="file" id="videoInput" accept="video/*" hidden />
+                <p>Arrastra un video o <button type="button" class="link" id="pickVideo">selecciona un archivo</button></p>
+                <span class="muted">MP4 o WebM. Maximo 200 MB.</span>
+              </div>
+              <div class="upload-progress" id="videoProgress" hidden>Subiendo video...</div>
+            </div>
+            <div class="slides-grid" id="videosGrid"></div>
+            <div class="save-bar" id="videoSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveVideos">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Blog ===== -->
+          <section class="panel" id="tab-blog">
+            <h2>Blog / Tips</h2>
+            <div id="blogEditor"></div>
+            <button class="btn btn-ghost" id="addPost">+ Agregar entrada</button>
+            <div class="save-bar" id="blogSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveBlog">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== FAQ ===== -->
+          <section class="panel" id="tab-faq">
+            <h2>Preguntas frecuentes</h2>
+            <p class="muted">Mejoran la confianza y el posicionamiento (SEO). Arrastra para reordenar.</p>
+            <div id="faqEditor" class="reorder-list"></div>
+            <button class="btn btn-ghost" id="addFaq">+ Agregar pregunta</button>
+            <div class="save-bar" id="faqSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveFaq">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Contacto ===== -->
+          <section class="panel" id="tab-contact">
+            <h2>Datos de contacto</h2>
+            <div class="card">
+              <div class="two-col">
+                <label>Nombre de la marca<input type="text" id="siteBrand" /></label>
+                <label>Eslogan<input type="text" id="siteTagline" /></label>
+                <label>Telefono<input type="text" id="sitePhone" /></label>
+                <label>WhatsApp (solo numeros con codigo de pais)<input type="text" id="siteWhatsapp" placeholder="573000000000" /></label>
+                <label>Correo<input type="email" id="siteEmail" /></label>
+                <label>Direccion<input type="text" id="siteAddress" /></label>
+                <label>Horario<input type="text" id="siteHours" /></label>
+                <label>Instagram (URL)<input type="text" id="siteInstagram" placeholder="https://instagram.com/tu-cuenta" /></label>
+                <label>Facebook (URL)<input type="text" id="siteFacebook" placeholder="https://facebook.com/tu-pagina" /></label>
+                <label>X / Twitter (URL)<input type="text" id="siteX" placeholder="https://x.com/tu-cuenta" /></label>
+              </div>
+              <div class="card" style="margin-top:16px">
+                <h4>Redes sociales flotantes (botones visibles en el sitio)</h4>
+                <p class="muted">Activa o desactiva cada boton flotante. La URL debe estar configurada arriba para que aparezca.</p>
+                <div class="socials-toggles">
+                  <label class="checkbox"><input type="checkbox" id="socialWhatsapp" /> WhatsApp</label>
+                  <label class="checkbox"><input type="checkbox" id="socialInstagram" /> Instagram</label>
+                  <label class="checkbox"><input type="checkbox" id="socialFacebook" /> Facebook</label>
+                  <label class="checkbox"><input type="checkbox" id="socialX" /> X (Twitter)</label>
+                </div>
+              </div>
+              <label>Mapa de Google (codigo para insertar / iframe)<textarea id="siteMapEmbed" rows="3" placeholder="Pega aqui el iframe de Google Maps (Compartir > Insertar un mapa)"></textarea></label>
+            </div>
+            <div class="save-bar" id="contactSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveContact">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Citas ===== -->
+          <section class="panel" id="tab-bookings">
+            <h2>Citas agendadas</h2>
+            <div class="card">
+              <h3>Disponibilidad</h3>
+              <label class="checkbox"><input type="checkbox" id="bkEnabled" /> Activar agendamiento en el sitio</label>
+              <label>Dias disponibles
+                <div class="days-row" id="bkDays"></div>
+              </label>
+              <div class="two-col">
+                <label>Hora de inicio<input type="number" id="bkStart" min="0" max="23" /></label>
+                <label>Hora de fin<input type="number" id="bkEnd" min="1" max="24" /></label>
+                <label>Duracion por cita (min)<input type="number" id="bkSlot" min="15" step="15" /></label>
+                <label>Anticipacion minima (dias)<input type="number" id="bkLead" min="0" /></label>
+              </div>
+              <label>Nota para el cliente<input type="text" id="bkNote" /></label>
+            </div>
+            <div class="save-bar" id="bookingSettingsSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveBookingSettings">Guardar disponibilidad</button></div>
+            <div class="card">
+              <h3>Proximas citas</h3>
+              <div id="bookingsList"></div>
+            </div>
+          </section>
+
+          <!-- ===== Descuentos ===== -->
+          <section class="panel" id="tab-discounts">
+            <h2>Descuentos y cupones</h2>
+            <p class="muted">Crea codigos para eventos especiales (fiestas patrias, navidad, lanzamientos, etc.). Puedes compartir el codigo con tus clientes y ellos lo ingresan al cotizar.</p>
+            <div class="card">
+              <h3>Nuevo descuento</h3>
+              <div class="two-col">
+                <label>Codigo (sin espacios)<input type="text" id="dcCode" placeholder="COLOMBIA2026" style="text-transform:uppercase" /></label>
+                <label>Etiqueta / nombre<input type="text" id="dcLabel" placeholder="Fiestas Patrias 20%" /></label>
+                <label>Tipo
+                  <select id="dcType">
+                    <option value="percent">Porcentaje (%)</option>
+                    <option value="fixed">Valor fijo ($)</option>
+                  </select>
+                </label>
+                <label>Valor<input type="number" id="dcValue" min="0" placeholder="20" /></label>
+                <label>Valido desde (opcional)<input type="date" id="dcStartsAt" /></label>
+                <label>Expira el (opcional)<input type="date" id="dcExpiresAt" /></label>
+                <label>Usos maximos (0 = ilimitado)<input type="number" id="dcMaxUses" min="0" value="0" /></label>
+              </div>
+              <label>Mensaje para el cliente<input type="text" id="dcMessage" placeholder="¡Descuento especial por Fiestas Patrias!" /></label>
+              <label class="checkbox"><input type="checkbox" id="dcActive" checked /> Activo desde ya</label>
+              <button class="btn btn-accent" id="addDiscount">Crear descuento</button>
+            </div>
+            <div class="card">
+              <h3>Cupones activos</h3>
+              <div id="discountsList"></div>
+            </div>
+          </section>
+
+          <!-- ===== Correo ===== -->
+          <section class="panel" id="tab-email">
+            <h2>Correo (cotizaciones)</h2>
+            <div class="card">
+              <h3>Credenciales del servidor (SMTP)</h3>
+              <p class="muted">Con esto las cotizaciones del formulario llegan a tu correo. Si lo dejas apagado, el formulario seguira funcionando por WhatsApp.</p>
+              <label class="checkbox"><input type="checkbox" id="emailEnabled" /> Activar envio por correo</label>
+              <div class="two-col">
+                <label>Servidor SMTP (host)<input type="text" id="emailHost" placeholder="smtp.gmail.com" /></label>
+                <label>Puerto<input type="text" id="emailPort" placeholder="587" /></label>
+                <label>Usuario<input type="text" id="emailUser" placeholder="tucorreo@gmail.com" /></label>
+                <label>Contrasena / App Password<input type="password" id="emailPass" placeholder="********" /></label>
+                <label>Nombre del remitente<input type="text" id="emailFromName" /></label>
+                <label>Correo remitente<input type="text" id="emailFromEmail" /></label>
+              </div>
+              <label class="checkbox"><input type="checkbox" id="emailSecure" /> Conexion segura (SSL, puerto 465)</label>
+              <button class="btn btn-ghost" id="testEmail">Enviar correo de prueba</button>
+            </div>
+            <div class="card">
+              <h3>Contenido del mensaje</h3>
+              <label>Correo que recibe las cotizaciones<input type="text" id="qfRecipient" /></label>
+              <label>Asunto del correo<input type="text" id="qfSubject" /></label>
+              <label>Texto introductorio del correo<textarea id="qfIntro" rows="3"></textarea></label>
+              <label>Texto del boton del formulario<input type="text" id="qfButton" /></label>
+              <label>Mensaje de exito (lo ve el cliente al enviar)<input type="text" id="qfSuccess" /></label>
+            </div>
+            <div class="save-bar" id="emailSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveEmail">Guardar cambios</button></div>
+          </section>
+
+          <!-- ===== Usuarios ===== -->
+          <section class="panel" id="tab-users">
+            <h2>Usuarios y roles</h2>
+            <div class="card">
+              <h3>Agregar usuario</h3>
+              <div class="two-col">
+                <label>Usuario<input type="text" id="newUsername" /></label>
+                <label>Contrasena <span class="muted">(min. 8 caracteres)</span><input type="password" id="newPassword" minlength="8" autocomplete="new-password" /></label>
+                <label>Rol<select id="newRole"><option value="editor">Editor</option><option value="owner">Propietario</option></select></label>
+              </div>
+              <button class="btn btn-accent" id="addUser">Crear usuario</button>
+            </div>
+            <div class="card"><h3>Usuarios actuales</h3><div id="usersList"></div></div>
+          </section>
+
+          <!-- ===== Registro ===== -->
+          <section class="panel" id="tab-audit">
+            <h2>Registro de cambios</h2>
+            <p class="muted">Ultimas acciones realizadas en el panel.</p>
+            <div class="audit-list" id="auditList"></div>
+          </section>
+
+        </main>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== Tour guiado ===== -->
+    <div class="tour-overlay" id="tourOverlay" hidden>
+      <div class="tour-spotlight" id="tourSpotlight"></div>
+      <div class="tour-tooltip" id="tourTooltip">
+        <p class="tour-text" id="tourText"></p>
+        <div class="tour-footer">
+          <span class="tour-step" id="tourStep"></span>
+          <div class="tour-btns">
+            <button class="btn btn-ghost tour-skip" id="tourSkip">Saltar</button>
+            <button class="btn btn-accent tour-next" id="tourNext">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
