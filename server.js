@@ -12,6 +12,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const webpush = require("web-push");
+const Database = require("better-sqlite3");
 const { readContent, writeContent, updateContent, addAuditEntry, getAuditLog } = require("./lib/db");
 
 const app = express();
@@ -116,11 +117,25 @@ function publicContent() {
 // rate limit por IP funcionen correctamente.
 if (IS_PROD) app.set("trust proxy", 1);
 
-// Cabeceras de seguridad. Se relaja la CSP porque el sitio carga recursos de CDNs
-// (Swiper, Google Fonts) y usa estilos/atributos en linea.
+// Cabeceras de seguridad. CSP estricta que permite solo los CDNs necesarios.
 app.use(
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "blob:"],
+        connectSrc: ["'self'"],
+        mediaSrc: ["'self'", "blob:"],
+        frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'none'"],
+      },
+    },
     crossOriginEmbedderPolicy: false,
   })
 );
@@ -129,8 +144,51 @@ app.use(
 app.use(compression());
 
 app.use(express.json({ limit: "1mb" }));
+
+// ---------- Session store persistente con SQLite ----------
+// Evita el warning de MemoryStore y mantiene las sesiones entre reinicios.
+function createSessionStore() {
+  const sessDb = new Database(path.join(DATA, "sessions.db"));
+  sessDb.pragma("journal_mode = WAL");
+  sessDb.exec(`CREATE TABLE IF NOT EXISTS sessions (
+    sid TEXT PRIMARY KEY,
+    sess TEXT NOT NULL,
+    expired INTEGER NOT NULL
+  )`);
+  sessDb.exec(`CREATE INDEX IF NOT EXISTS idx_sessions_expired ON sessions(expired)`);
+  // Limpiar sesiones expiradas cada 15 min
+  setInterval(() => {
+    try { sessDb.prepare("DELETE FROM sessions WHERE expired < ?").run(Date.now()); } catch (e) {}
+  }, 15 * 60 * 1000);
+
+  const Store = session.Store;
+  class SQLiteStore extends Store {
+    constructor() { super(); this.db = sessDb; }
+    get(sid, cb) {
+      try {
+        const row = this.db.prepare("SELECT sess FROM sessions WHERE sid = ? AND expired > ?").get(sid, Date.now());
+        cb(null, row ? JSON.parse(row.sess) : null);
+      } catch (e) { cb(e); }
+    }
+    set(sid, sess, cb) {
+      try {
+        const maxAge = (sess.cookie && sess.cookie.maxAge) || 1000 * 60 * 60 * 8;
+        const expired = Date.now() + maxAge;
+        this.db.prepare("INSERT OR REPLACE INTO sessions (sid, sess, expired) VALUES (?, ?, ?)").run(sid, JSON.stringify(sess), expired);
+        cb && cb(null);
+      } catch (e) { cb && cb(e); }
+    }
+    destroy(sid, cb) {
+      try { this.db.prepare("DELETE FROM sessions WHERE sid = ?").run(sid); cb && cb(null); } catch (e) { cb && cb(e); }
+    }
+    touch(sid, sess, cb) { this.set(sid, sess, cb); }
+  }
+  return new SQLiteStore();
+}
+
 app.use(
   session({
+    store: createSessionStore(),
     name: "mimmo.sid",
     secret: SESSION_SECRET,
     resave: false,
@@ -176,19 +234,59 @@ function requireOwner(req, res, next) {
   return res.status(403).json({ error: "Requiere rol propietario" });
 }
 
+// Proteccion CSRF basica: verificar que las peticiones mutantes (POST/PUT/DELETE)
+// vienen del mismo origen. Evita ataques CSRF desde sitios externos.
+function csrfCheck(req, res, next) {
+  if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
+  const origin = req.get("origin") || req.get("referer") || "";
+  const host = req.get("host") || "";
+  // Permitir si no hay origin (peticiones mismas del server, curl, etc.) o si coincide
+  if (!origin || origin.includes(host)) return next();
+  // En desarrollo ser más permisivo
+  if (!IS_PROD) return next();
+  return res.status(403).json({ error: "Peticion rechazada (origen no coincide)" });
+}
+// Aplicar CSRF check a todas las rutas API
+app.use("/api", csrfCheck);
+
 // ---------- Subidas ----------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOADS),
   filename: (req, file, cb) => cb(null, `${uid("tmp")}${path.extname(file.originalname).toLowerCase()}`),
 });
-const upload = multer({
+// Subida de imágenes (máx 15 MB)
+const uploadImage = multer({
   storage,
-  limits: { fileSize: 200 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    // Validar por MIME type O por extensión (algunos navegadores no envían el MIME correcto para avif/heic)
-    const mimeOk = /image\/(jpe?g|png|webp|gif|avif|svg\+xml|heic|heif)|video\/(mp4|webm|quicktime)/.test(file.mimetype);
+    // SVG bloqueado: puede contener scripts maliciosos
+    const mimeOk = /image\/(jpe?g|png|webp|gif|avif|heic|heif)/.test(file.mimetype);
     const ext = path.extname(file.originalname).toLowerCase();
-    const extOk = /\.(jpe?g|png|webp|gif|avif|svg|heic|heif|mp4|webm|mov)$/.test(ext);
+    const extOk = /\.(jpe?g|png|webp|gif|avif|heic|heif)$/.test(ext);
+    const ok = mimeOk || extOk;
+    cb(ok ? null : new Error("Tipo de archivo no permitido. Formatos validos: jpg, png, webp, avif, gif."), ok);
+  },
+});
+// Subida de video (máx 150 MB)
+const uploadVideo = multer({
+  storage,
+  limits: { fileSize: 150 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const mimeOk = /video\/(mp4|webm|quicktime)/.test(file.mimetype);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const extOk = /\.(mp4|webm|mov)$/.test(ext);
+    const ok = mimeOk || extOk;
+    cb(ok ? null : new Error("Tipo de video no permitido. Formatos validos: mp4, webm, mov."), ok);
+  },
+});
+// Subida mixta (carrusel: imagen o video)
+const uploadMedia = multer({
+  storage,
+  limits: { fileSize: 150 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const mimeOk = /image\/(jpe?g|png|webp|gif|avif|heic|heif)|video\/(mp4|webm|quicktime)/.test(file.mimetype);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const extOk = /\.(jpe?g|png|webp|gif|avif|heic|heif|mp4|webm|mov)$/.test(ext);
     const ok = mimeOk || extOk;
     cb(ok ? null : new Error("Tipo de archivo no permitido"), ok);
   },
@@ -450,7 +548,7 @@ app.put("/api/content", requireAuth, async (req, res) => {
 });
 
 // ---------- Subida generica de imagenes ----------
-app.post("/api/upload", requireAuth, upload.single("file"), async (req, res) => {
+app.post("/api/upload", requireAuth, uploadImage.single("file"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Sin archivo" });
     const file = await optimizeImage(req.file.path, req.body.mode);
@@ -464,7 +562,7 @@ app.post("/api/upload", requireAuth, upload.single("file"), async (req, res) => 
 });
 
 // ---------- Carrusel ----------
-app.post("/api/carousel", requireAuth, upload.single("image"), async (req, res) => {
+app.post("/api/carousel", requireAuth, uploadMedia.single("image"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Sin archivo" });
     const isVideo = /video\//i.test(req.file.mimetype) || /\.(mp4|webm|mov)$/i.test(req.file.originalname);
@@ -522,7 +620,7 @@ app.delete("/api/carousel/:id", requireAuth, async (req, res) => {
 });
 
 // ---------- Videos ----------
-app.post("/api/videos", requireAuth, upload.single("video"), async (req, res) => {
+app.post("/api/videos", requireAuth, uploadVideo.single("video"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "Sin archivo" });
   const item = { id: uid("vid"), file: `uploads/${req.file.filename}`, caption: cleanStr(req.body.caption, 200) };
   await updateContent((content) => {
@@ -888,10 +986,14 @@ app.use(express.static(SERVE_DIR));
 if (SERVE_DIR !== PUBLIC) app.use("/uploads", express.static(UPLOADS));
 
 // La ruta /admin requiere un token de acceso por URL o cookie de admin-gate.
-// Se configura con ADMIN_PATH_TOKEN en .env. Si no esta definido, la ruta queda
-// tal cual (compatible hacia atras). Ejemplo: ADMIN_PATH_TOKEN=mimmo-admin-2026
+// Se configura con ADMIN_PATH_TOKEN en .env. En produccion es OBLIGATORIO.
+// Ejemplo: ADMIN_PATH_TOKEN=mimmo-admin-2026
 // → acceder con /admin?token=mimmo-admin-2026 la primera vez; luego guarda cookie.
-const ADMIN_PATH_TOKEN = process.env.ADMIN_PATH_TOKEN || "";
+const ADMIN_PATH_TOKEN = process.env.ADMIN_PATH_TOKEN || (IS_PROD ? crypto.randomBytes(16).toString("hex") : "");
+if (IS_PROD && !process.env.ADMIN_PATH_TOKEN) {
+  console.warn(`[ADVERTENCIA] ADMIN_PATH_TOKEN no definido. Se genero uno temporal: ${ADMIN_PATH_TOKEN}`);
+  console.warn("Definelo en .env para tener un acceso estable al panel.");
+}
 app.get("/admin", (req, res) => {
   if (ADMIN_PATH_TOKEN) {
     const cookieHeader = req.headers.cookie || "";

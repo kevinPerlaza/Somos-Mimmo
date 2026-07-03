@@ -1086,5 +1086,3 @@ $("addDiscount").addEventListener("click", async () => {
   $("dcMaxUses").value = "0"; $("dcActive").checked = true;
   renderDiscounts(); toast("Descuento creado ✓");
 });
-
-checkSession();

@@ -5,6 +5,9 @@ dist/
 data/mimmo.db
 data/mimmo.db-wal
 data/mimmo.db-shm
+data/sessions.db
+data/sessions.db-wal
+data/sessions.db-shm
 data/content.json.migrated
 
 # Archivos multimedia grandes (no subir al repo)

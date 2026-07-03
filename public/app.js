@@ -600,7 +600,22 @@ function renderContact() {
   cl.innerHTML = items.join("");
 
   const map = document.getElementById("mapWrap");
-  map.innerHTML = site.mapEmbed ? site.mapEmbed : "";
+  // Sanitizar mapEmbed: solo permitir iframes de Google Maps
+  if (site.mapEmbed) {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = site.mapEmbed;
+    const iframe = tmp.querySelector("iframe");
+    if (iframe && /^https:\/\/(www\.)?google\.com\/maps/.test(iframe.src || "")) {
+      iframe.setAttribute("loading", "lazy");
+      iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+      map.innerHTML = "";
+      map.appendChild(iframe);
+    } else {
+      map.innerHTML = "";
+    }
+  } else {
+    map.innerHTML = "";
+  }
 
   setText("footerTagline", tc(site.tagline, "site.tagline"));
   setText("footerCopy", `© ${new Date().getFullYear()} ${site.brand || "Mimmo"}. ${LANG === "en" ? "All rights reserved." : "Todos los derechos reservados."}`);
