@@ -240,8 +240,14 @@ function csrfCheck(req, res, next) {
   if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
   const origin = req.get("origin") || req.get("referer") || "";
   const host = req.get("host") || "";
-  // Permitir si no hay origin (peticiones mismas del server, curl, etc.) o si coincide
-  if (!origin || origin.includes(host)) return next();
+  // Permitir si no hay origin (peticiones mismas del server, curl, etc.) o si coincide exactamente.
+  if (!origin) return next();
+  try {
+    const source = new URL(origin);
+    if (source.host === host) return next();
+  } catch (e) {
+    if (!IS_PROD) return next();
+  }
   // En desarrollo ser más permisivo
   if (!IS_PROD) return next();
   return res.status(403).json({ error: "Peticion rechazada (origen no coincide)" });
@@ -250,6 +256,18 @@ function csrfCheck(req, res, next) {
 app.use("/api", csrfCheck);
 
 // ---------- Subidas ----------
+function safeUploadPath(file) {
+  const rel = cleanStr(file, 300).replace(/\\/g, "/");
+  if (!/^uploads\/[^/]+$/.test(rel)) return null;
+  const resolved = path.resolve(PUBLIC, rel);
+  const uploadsRoot = path.resolve(UPLOADS) + path.sep;
+  return resolved.startsWith(uploadsRoot) ? resolved : null;
+}
+function deleteUploadedFile(file) {
+  const target = safeUploadPath(file);
+  if (target) fs.unlink(target, () => {});
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOADS),
   filename: (req, file, cb) => cb(null, `${uid("tmp")}${path.extname(file.originalname).toLowerCase()}`),
@@ -615,7 +633,7 @@ app.delete("/api/carousel/:id", requireAuth, async (req, res) => {
     removed = content.carousel.splice(idx, 1)[0];
   });
   if (!removed) return res.status(404).json({ error: "No encontrado" });
-  if (removed.file) fs.unlink(path.join(PUBLIC, removed.file), () => {});
+  if (removed.file) deleteUploadedFile(removed.file);
   res.json({ ok: true });
 });
 
@@ -646,7 +664,7 @@ app.delete("/api/videos/:id", requireAuth, async (req, res) => {
     removed = content.videos.splice(idx, 1)[0];
   });
   if (!removed) return res.status(404).json({ error: "No encontrado" });
-  if (removed.file) fs.unlink(path.join(PUBLIC, removed.file), () => {});
+  if (removed.file) deleteUploadedFile(removed.file);
   res.json({ ok: true });
 });
 
@@ -1004,7 +1022,8 @@ app.get("/admin", (req, res) => {
     }
     if (tokenParam === ADMIN_PATH_TOKEN && !hasGate) {
       // guarda cookie de gate por 7 dias para no tener que poner el token cada vez
-      res.setHeader("Set-Cookie", `mimmo_gate=${ADMIN_PATH_TOKEN}; Path=/admin; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 3600}`);
+      const secure = IS_PROD ? "; Secure" : "";
+      res.setHeader("Set-Cookie", `mimmo_gate=${ADMIN_PATH_TOKEN}; Path=/admin; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 3600}${secure}`);
     }
   }
   res.sendFile(path.join(SERVE_DIR, "admin.html"));

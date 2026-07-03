@@ -591,6 +591,9 @@ document.getElementById("postModalBackdrop").addEventListener("click", closePost
 
 function renderContact() {
   const site = DATA.site || {};
+  const instagramUrl = safeExternalUrl(site.instagram);
+  const facebookUrl = safeExternalUrl(site.facebook);
+  const xUrl = safeExternalUrl(site.x);
   const cl = document.getElementById("contactList");
   const items = [];
   if (site.phone) items.push(`<li>${ICON_PHONE}<a href="tel:${site.phone.replace(/\s/g, "")}">${escapeHtml(site.phone)}</a></li>`);
@@ -623,9 +626,9 @@ function renderContact() {
     site.phone ? `<a href="tel:${site.phone.replace(/\s/g, "")}">${escapeHtml(site.phone)}</a>` : "",
     site.email ? `<a href="mailto:${site.email}">${escapeHtml(site.email)}</a>` : "",
     site.address ? `<span>${escapeHtml(site.address)}</span>` : "",
-    site.instagram ? `<a href="${escapeHtml(site.instagram)}" target="_blank" rel="noopener">Instagram</a>` : "",
-    site.facebook ? `<a href="${escapeHtml(site.facebook)}" target="_blank" rel="noopener">Facebook</a>` : "",
-    site.x ? `<a href="${escapeHtml(site.x)}" target="_blank" rel="noopener">X</a>` : "",
+    instagramUrl ? `<a href="${escapeHtml(instagramUrl)}" target="_blank" rel="noopener">Instagram</a>` : "",
+    facebookUrl ? `<a href="${escapeHtml(facebookUrl)}" target="_blank" rel="noopener">Facebook</a>` : "",
+    xUrl ? `<a href="${escapeHtml(xUrl)}" target="_blank" rel="noopener">X</a>` : "",
   ].filter(Boolean).join("");
 
   setText("formSubmit", (DATA.quoteForm && DATA.quoteForm.buttonText) || t("form.send"));
@@ -642,20 +645,20 @@ function renderContact() {
     } else { floatWa.hidden = true; }
   }
   if (floatIg) {
-    if (site.instagram && socials.instagram !== false) {
-      floatIg.href = site.instagram;
+    if (instagramUrl && socials.instagram !== false) {
+      floatIg.href = instagramUrl;
       floatIg.hidden = false;
     } else { floatIg.hidden = true; }
   }
   if (floatFb) {
-    if (site.facebook && socials.facebook !== false) {
-      floatFb.href = site.facebook;
+    if (facebookUrl && socials.facebook !== false) {
+      floatFb.href = facebookUrl;
       floatFb.hidden = false;
     } else { floatFb.hidden = true; }
   }
   if (floatX) {
-    if (site.x && socials.x !== false) {
-      floatX.href = site.x;
+    if (xUrl && socials.x !== false) {
+      floatX.href = xUrl;
       floatX.hidden = false;
     } else { floatX.hidden = true; }
   }
@@ -932,7 +935,7 @@ function injectBusinessSchema() {
   if (site.email) data.email = site.email;
   if (site.address) data.address = { "@type": "PostalAddress", streetAddress: site.address };
   if (site.hours) data.openingHours = site.hours;
-  const sameAs = [site.instagram, site.facebook, site.x].filter(Boolean);
+  const sameAs = [site.instagram, site.facebook, site.x].map(safeExternalUrl).filter(Boolean);
   if (sameAs.length) data.sameAs = sameAs;
   const s = document.createElement("script");
   s.type = "application/ld+json"; s.id = "bizSchema";
@@ -951,6 +954,14 @@ function markInvalid(input, msg) {
 }
 function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "")); }
 function isValidPhone(v) { return (String(v || "").replace(/\D/g, "").length) >= 7; }
+function safeExternalUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch (e) {
+    return "";
+  }
+}
 // Devuelve un mensaje de error o null si el formulario es valido
 function validateContactForm(form) {
   const name = form.querySelector('[name="name"]');
