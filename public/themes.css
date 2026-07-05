@@ -655,7 +655,10 @@
 [data-theme="cosmos"] body { background: radial-gradient(ellipse 700px 400px at 15% 5%, rgba(124,58,237,0.12), transparent 55%), radial-gradient(ellipse 500px 400px at 85% 15%, rgba(224,64,160,0.1), transparent 50%), var(--bg); background-attachment: fixed; }
 [data-theme="cosmos"][data-mode="dark"] body { background: radial-gradient(ellipse 700px 400px at 15% 5%, rgba(124,58,237,0.2), transparent 55%), radial-gradient(ellipse 500px 400px at 85% 15%, rgba(224,64,160,0.15), transparent 50%), var(--bg); background-attachment: fixed; }
 [data-theme="cosmos"] .site-header { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+[data-theme="cosmos"] .nav-links a { color: var(--text); }
 [data-theme="cosmos"] .nav-links a::after { background: var(--brand-accent); }
+[data-theme="cosmos"] .icon-btn { color: var(--text); border-color: var(--border); }
+[data-theme="cosmos"] .nav-cta { background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)); color: #fff; border: none; }
 [data-theme="cosmos"] .hero-text h1 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 800; background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 [data-theme="cosmos"][data-mode="dark"] .hero-text h1 { -webkit-text-fill-color: unset; background: none; color: var(--text); }
 [data-theme="cosmos"] .section-head h2 { font-size: clamp(1.9rem, 4.5vw, 3rem); font-weight: 700; color: var(--brand-primary); }
