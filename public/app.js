@@ -347,6 +347,7 @@ function applyDecorations() {
 
 function renderServices() {
   const grid = document.getElementById("servicesGrid");
+  if (!grid) return;
   const list = DATA.services || [];
   const mob = window.innerWidth < 768;
   grid.innerHTML = list.map((s) => `
