@@ -999,6 +999,18 @@ app.get("/sitemap.xml", (req, res) => {
   res.type("application/xml").send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
 });
 
+// ---------- Hotlink protection para uploads ----------
+// Bloquea que otros sitios embiban directamente tus imagenes/videos
+app.use("/uploads", (req, res, next) => {
+  const referer = req.get("referer") || "";
+  const host = req.get("host") || "";
+  // Permitir: sin referer (acceso directo), mismo dominio, localhost
+  if (!referer || referer.includes(host) || referer.includes("localhost")) return next();
+  // En producción bloquear hotlinks externos
+  if (IS_PROD) return res.status(403).send("Acceso no permitido");
+  next();
+});
+
 // ---------- Estaticos ----------
 app.use(express.static(SERVE_DIR));
 // uploads siempre desde public/ (dist/ no tiene uploads)

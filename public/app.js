@@ -506,7 +506,7 @@ function renderVideos() {
   vg.innerHTML = visible.map((v, i) => `
     <button type="button" class="video-card" data-i="${allIdx + i}" aria-label="${LANG === "en" ? "Play video" : "Reproducir video"}${v.caption ? ": " + escapeHtml(v.caption) : ""}">
       <div class="video-thumb">
-        <video src="${v.file}#t=0.1" preload="metadata" muted playsinline tabindex="-1"></video>
+        <video src="${v.file}#t=0.1" preload="metadata" muted playsinline tabindex="-1" controlsList="nodownload" oncontextmenu="return false"></video>
         <span class="video-play">${PLAY_ICON}</span>
       </div>
       ${v.caption ? `<div class="video-caption">${escapeHtml(v.caption)}</div>` : ""}
@@ -536,7 +536,7 @@ function openVideo(v) {
   if (!v) return;
   const m = document.getElementById("videoModal");
   const holder = document.getElementById("videoModalPlayer");
-  holder.innerHTML = `<video src="${v.file}" controls autoplay playsinline preload="auto"></video>`;
+  holder.innerHTML = `<video src="${v.file}" controls autoplay playsinline preload="auto" controlsList="nodownload" oncontextmenu="return false"></video>`;
   document.getElementById("videoModalCaption").textContent = v.caption || "";
   m.hidden = false;
   document.body.style.overflow = "hidden";
@@ -681,7 +681,7 @@ function buildCarousel() {
     const isVideo = c.type === "video" || /\.(mp4|webm|mov)$/i.test(c.file || "");
     const cap = s.showCaptions && c.caption ? `<div class="slide-caption">${escapeHtml(c.caption)}</div>` : "";
     if (isVideo) {
-      return `<div class="swiper-slide slide-video"><video class="slide-vid" src="${c.file}" muted loop playsinline preload="metadata"></video>${cap}</div>`;
+      return `<div class="swiper-slide slide-video"><video class="slide-vid" src="${c.file}" muted loop playsinline preload="metadata" controlsList="nodownload" oncontextmenu="return false"></video>${cap}</div>`;
     }
     const fitClass = c.fit === "contain" ? "slide-img contain" : "slide-img";
     const style = (Number(c.scale) || 1) !== 1 ? `transform:scale(${c.scale});` : "";
@@ -1127,3 +1127,23 @@ document.getElementById("videoModalClose").addEventListener("click", closeVideo)
 document.getElementById("videoModalBackdrop").addEventListener("click", closeVideo);
 
 load();
+
+// ===== Proteccion de contenido =====
+// 1. Desactivar click derecho en imagenes y videos
+document.addEventListener("contextmenu", (e) => {
+  if (e.target.closest("img, video, .swiper-slide, .video-grid, .carousel-wrap")) {
+    e.preventDefault();
+  }
+});
+
+// 2. Bloquear arrastrar imagenes y videos
+document.addEventListener("dragstart", (e) => {
+  if (e.target.tagName === "IMG" || e.target.tagName === "VIDEO") {
+    e.preventDefault();
+  }
+});
+
+// Prevenir seleccion en imagenes
+document.addEventListener("selectstart", (e) => {
+  if (e.target.closest("img, video")) e.preventDefault();
+});

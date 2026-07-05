@@ -42,7 +42,8 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; transition: background 0.3s, color 0.3s; }
 h1, h2, h3, .brand { font-family: var(--font-head); line-height: 1.15; }
-img { max-width: 100%; display: block; }
+img { max-width: 100%; display: block; -webkit-user-drag: none; user-select: none; -webkit-touch-callout: none; }
+video { -webkit-user-drag: none; user-select: none; -webkit-touch-callout: none; }
 .container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
 
 .eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.74rem; font-weight: 600; color: #c0392b; margin-bottom: 10px; }
