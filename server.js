@@ -273,43 +273,29 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOADS),
   filename: (req, file, cb) => cb(null, `${uid("tmp")}${path.extname(file.originalname).toLowerCase()}`),
 });
-// Subida de imágenes (máx 15 MB)
-const uploadImage = multer({
-  storage,
-  limits: { fileSize: 15 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    // SVG bloqueado: puede contener scripts maliciosos
-    const mimeOk = /image\/(jpe?g|png|webp|gif|avif|heic|heif)/.test(file.mimetype);
-    const ext = path.extname(file.originalname).toLowerCase();
-    const extOk = /\.(jpe?g|png|webp|gif|avif|heic|heif)$/.test(ext);
-    const ok = mimeOk || extOk;
-    cb(ok ? null : new Error("Tipo de archivo no permitido. Formatos validos: jpg, png, webp, avif, gif."), ok);
-  },
-});
-// Subida de video (máx 150 MB)
-const uploadVideo = multer({
-  storage,
-  limits: { fileSize: 150 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const mimeOk = /video\/(mp4|webm|quicktime)/.test(file.mimetype);
-    const ext = path.extname(file.originalname).toLowerCase();
-    const extOk = /\.(mp4|webm|mov)$/.test(ext);
-    const ok = mimeOk || extOk;
-    cb(ok ? null : new Error("Tipo de video no permitido. Formatos validos: mp4, webm, mov."), ok);
-  },
-});
-// Subida mixta (carrusel: imagen o video)
-const uploadMedia = multer({
-  storage,
-  limits: { fileSize: 150 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const mimeOk = /image\/(jpe?g|png|webp|gif|avif|heic|heif)|video\/(mp4|webm|quicktime)/.test(file.mimetype);
-    const ext = path.extname(file.originalname).toLowerCase();
-    const extOk = /\.(jpe?g|png|webp|gif|avif|heic|heif|mp4|webm|mov)$/.test(ext);
-    const ok = mimeOk || extOk;
-    cb(ok ? null : new Error("Tipo de archivo no permitido"), ok);
-  },
-});
+
+// Factoria de multer con validacion por tipo
+const IMAGE_MIME = /image\/(jpe?g|png|webp|gif|avif|heic|heif)/;
+const IMAGE_EXT = /\.(jpe?g|png|webp|gif|avif|heic|heif)$/;
+const VIDEO_MIME = /video\/(mp4|webm|quicktime)/;
+const VIDEO_EXT = /\.(mp4|webm|mov)$/;
+
+function createUploader(maxMB, allowImage, allowVideo, errorMsg) {
+  return multer({
+    storage,
+    limits: { fileSize: maxMB * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      const ok = (allowImage && (IMAGE_MIME.test(file.mimetype) || IMAGE_EXT.test(ext)))
+             || (allowVideo && (VIDEO_MIME.test(file.mimetype) || VIDEO_EXT.test(ext)));
+      cb(ok ? null : new Error(errorMsg || "Tipo de archivo no permitido"), ok);
+    },
+  });
+}
+
+const uploadImage = createUploader(15, true, false, "Formato no permitido. Validos: jpg, png, webp, avif, gif.");
+const uploadVideo = createUploader(150, false, true, "Formato no permitido. Validos: mp4, webm, mov.");
+const uploadMedia = createUploader(150, true, true, "Tipo de archivo no permitido.");
 
 async function optimizeImage(srcPath, mode) {
   if (mode === "logo") {
@@ -366,6 +352,7 @@ app.post("/api/quote", publicFormLimiter, async (req, res) => {
   const cfg = content.email || {};
   const qf = content.quoteForm || {};
   const transporter = makeTransporter(cfg);
+  const notifSummary = `${name} - ${phone}${service ? " - " + service : ""}`;
 
   if (transporter && qf.recipientEmail) {
     try {
@@ -386,32 +373,29 @@ app.post("/api/quote", publicFormLimiter, async (req, res) => {
         subject: qf.subject || "Nueva solicitud de cotizacion",
         html,
       });
-      // Confirmacion al cliente (si dejo un correo valido)
+      // Confirmacion al cliente
       if (email) {
         const brand = (content.site && content.site.brand) || "Mimmo";
-        transporter
-          .sendMail({
-            from: `"${cfg.fromName || brand}" <${cfg.fromEmail || cfg.user}>`,
-            to: email,
-            subject: `Recibimos tu solicitud - ${brand}`,
-            html: `<h2>Gracias, ${esc(name)}!</h2>
-              <p>${esc(qf.successMessage || "Hemos recibido tu solicitud y te contactaremos pronto.")}</p>
-              ${service ? `<p><b>Servicio de interes:</b> ${esc(service)}</p>` : ""}
-              <p>Resumen de tu mensaje:</p><blockquote>${esc(message)}</blockquote>
-              <p>— ${esc(brand)}</p>`,
-          })
-          .catch((e) => console.error("Error correo confirmacion cliente:", e.message));
+        transporter.sendMail({
+          from: `"${cfg.fromName || brand}" <${cfg.fromEmail || cfg.user}>`,
+          to: email,
+          subject: `Recibimos tu solicitud - ${brand}`,
+          html: `<h2>Gracias, ${esc(name)}!</h2>
+            <p>${esc(qf.successMessage || "Hemos recibido tu solicitud y te contactaremos pronto.")}</p>
+            ${service ? `<p><b>Servicio de interes:</b> ${esc(service)}</p>` : ""}
+            <p>Resumen de tu mensaje:</p><blockquote>${esc(message)}</blockquote>
+            <p>— ${esc(brand)}</p>`,
+        }).catch((e) => console.error("Error correo confirmacion:", e.message));
       }
-      pushNotification("quote", "Nueva cotización", `${name} - ${phone}${service ? " - " + service : ""}`);
+      pushNotification("quote", "Nueva cotización", notifSummary);
       return res.json({ ok: true, emailed: true, message: qf.successMessage || "Solicitud enviada." });
     } catch (e) {
       console.error("Error enviando correo:", e.message);
-      pushNotification("quote", "Nueva cotización", `${name} - ${phone}${service ? " - " + service : ""}`);
-      return res.status(200).json({ ok: false, emailed: false, error: "No se pudo enviar el correo, intenta por WhatsApp." });
+      pushNotification("quote", "Nueva cotización", notifSummary);
+      return res.json({ ok: true, emailed: false, error: "No se pudo enviar el correo, intenta por WhatsApp." });
     }
   }
-  // Sin correo configurado: el front usara WhatsApp
-  pushNotification("quote", "Nueva cotización", `${name} - ${phone}${service ? " - " + service : ""}`);
+  pushNotification("quote", "Nueva cotización", notifSummary);
   return res.json({ ok: true, emailed: false, message: qf.successMessage || "Solicitud recibida." });
 });
 
@@ -992,7 +976,7 @@ app.get("/robots.txt", (req, res) => {
 app.get("/sitemap.xml", (req, res) => {
   const base = siteBaseUrl(req);
   const today = new Date().toISOString().slice(0, 10);
-  const paths = ["/", "/#servicios", "/#planes", "/#cotizador", "/#nosotros", "/#agenda", "/#testimonios", "/#blog", "/#faq", "/#contacto"];
+  const paths = ["/", "/#planes", "/#cotizador", "/#nosotros", "/#agenda", "/#testimonios", "/#blog", "/#faq", "/#contacto"];
   const urls = paths
     .map((p) => `  <url><loc>${base}${p}</loc><lastmod>${today}</lastmod></url>`)
     .join("\n");
