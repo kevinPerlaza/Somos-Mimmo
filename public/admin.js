@@ -6,6 +6,9 @@ const THEMES = [
   { id: "fresh",   name: "Fresh",   desc: "Colores vivos, formas organicas y anti-grid.", colors: ["#06a17a", "#fffdf7", "#ff5a3c"] },
   { id: "glass",   name: "✨ Glass",  desc: "Cristal esmerilado, blobs organicos, profundidad y glow.", colors: ["#0d9488", "#0f172a", "#f472b6"] },
   { id: "neo",     name: "⚡ Neo",    desc: "Bordes gruesos, sombras duras, tipografia bold. Personalidad.", colors: ["#1a1a2e", "#fffef5", "#ff6b35"] },
+  { id: "editorial", name: "📐 Editorial", desc: "Minimal, crema, tipografia gigante. Elegancia silenciosa.", colors: ["#1a1a1a", "#f5f2ec", "#d4cfc7"] },
+  { id: "cosmos",  name: "🚀 Cosmos", desc: "Gradientes violeta/magenta, ondas fluidas, espacio profundo.", colors: ["#7c3aed", "#faf5ff", "#ec4899"] },
+  { id: "bold",    name: "🔥 Bold",   desc: "Naranja intenso, uppercase, alto contraste. Impactante.", colors: ["#1a1a1a", "#ffffff", "#ff6d00"] },
   { id: "chile",   name: "🇨🇱 Fiestas Patrias", desc: "Rojo, blanco y azul. Celebra las Fiestas Patrias de Chile.", colors: ["#D52B1E", "#fff", "#0039A6"] },
   { id: "navidad", name: "🎄 Navidad & Año Nuevo", desc: "Rojo, dorado y verde pino. Nieve animada incluida.", colors: ["#1a4a1a", "#D4AF37", "#B22222"] },
 ];

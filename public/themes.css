@@ -1,9 +1,11 @@
 /* ==========================================================================
    TEMAS — se activan con data-theme en <html>
-   - classic       : verde profesional (definido en styles.css)
    - fresh         : colores vivos, formas organicas
    - glass         : glassmorphism, blobs orgánicos, efecto cristal
    - neo           : neobrutalism suave, bordes gruesos, sombras duras
+   - editorial     : minimal editorial (crema, tipografía negra grande)
+   - cosmos        : gradientes violeta/magenta, ondas, espacio
+   - bold          : split naranja, uppercase, alto contraste
    - chile         : Fiestas Patrias de Chile (rojo, blanco, azul)
    - navidad       : Navidad y Año Nuevo (rojo y dorado nevado)
    ========================================================================== */
@@ -550,6 +552,517 @@
   border-color: var(--brand-accent) !important;
   outline: none;
 }
+
+
+/* =======================  TEMA EDITORIAL  =======================
+   Inspirado en: DA Creative — minimal editorial, fondo crema,
+   tipografía negra enorme, mucho espacio blanco, botones con borde fino.
+   ========================================================================== */
+[data-theme="editorial"] {
+  --brand-primary: #1a1a1a;
+  --brand-accent: #1a1a1a;
+  --accent-dark: #000000;
+  --bg: #f5f2ec;
+  --bg-alt: #eae5dc;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b6560;
+  --border: #d4cfc7;
+  --header-bg: rgba(245, 242, 236, 0.95);
+  --radius: 0px;
+  --shadow: none;
+  --font-head: "Poppins", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+[data-theme="editorial"][data-mode="dark"] {
+  --bg: #1a1714;
+  --bg-alt: #22201c;
+  --surface: #2a2724;
+  --text: #f5f2ec;
+  --muted: #a09890;
+  --border: #3a3530;
+  --header-bg: rgba(26, 23, 20, 0.95);
+}
+[data-theme="editorial"] body {
+  background: var(--bg);
+}
+/* Header ultra limpio */
+[data-theme="editorial"] .site-header {
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+/* Tipografía editorial gigante */
+[data-theme="editorial"] .hero-text h1 {
+  font-size: clamp(3rem, 9vw, 6rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--text);
+}
+[data-theme="editorial"] .section-head h2 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+[data-theme="editorial"] .eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 400;
+}
+/* Botones minimalistas con borde fino */
+[data-theme="editorial"] .btn {
+  border-radius: 999px;
+  border: 1.5px solid var(--text);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  padding: 14px 28px;
+}
+[data-theme="editorial"] .btn-accent {
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: none;
+}
+[data-theme="editorial"] .btn-accent:hover {
+  background: transparent;
+  color: var(--text);
+}
+[data-theme="editorial"] .btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+[data-theme="editorial"] .btn-ghost:hover {
+  border-color: var(--text);
+}
+/* Cards sin sombra, solo borde */
+[data-theme="editorial"] .service-card,
+[data-theme="editorial"] .plan-card,
+[data-theme="editorial"] .testimonial-card,
+[data-theme="editorial"] .blog-card,
+[data-theme="editorial"] .faq-item,
+[data-theme="editorial"] .quote-card,
+[data-theme="editorial"] .booking-form,
+[data-theme="editorial"] .contact-form {
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--surface);
+}
+[data-theme="editorial"] .plan-card.featured {
+  border: 2px solid var(--text);
+}
+[data-theme="editorial"] .plan-badge { background: var(--text); color: var(--bg); border-radius: 0; }
+[data-theme="editorial"] .service-icon {
+  border-radius: 0;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+}
+/* Secciones alternadas */
+[data-theme="editorial"] .section-alt {
+  background: var(--bg-alt);
+}
+[data-theme="editorial"] .section-contact {
+  background: var(--text);
+  color: var(--bg);
+}
+[data-theme="editorial"] .section-contact .eyebrow,
+[data-theme="editorial"] .section-contact h2,
+[data-theme="editorial"] .section-contact p { color: var(--bg); }
+/* Carrusel sin bordes redondeados */
+[data-theme="editorial"] .mainSwiper {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+/* Footer minimalista */
+[data-theme="editorial"] .site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+/* Scroll reveal suave */
+@supports (animation-timeline: view()) {
+  [data-theme="editorial"] .service-card,
+  [data-theme="editorial"] .plan-card,
+  [data-theme="editorial"] .testimonial-card,
+  [data-theme="editorial"] .blog-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: editorial-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+}
+@keyframes editorial-reveal { to { opacity: 1; transform: translateY(0); } }
+
+
+/* =======================  TEMA COSMOS  =======================
+   Inspirado en: Boost/Space — gradientes violeta/magenta, ondas fluidas,
+   espacio profundo, elementos redondeados y suaves.
+   ========================================================================== */
+[data-theme="cosmos"] {
+  --brand-primary: #7c3aed;
+  --brand-accent: #ec4899;
+  --accent-dark: #be185d;
+  --bg: #faf5ff;
+  --bg-alt: #f3e8ff;
+  --surface: #ffffff;
+  --text: #1e1035;
+  --muted: #6b5580;
+  --border: #e9d5ff;
+  --header-bg: rgba(250, 245, 255, 0.9);
+  --radius: 24px;
+  --shadow: 0 20px 50px -16px rgba(124, 58, 237, 0.25);
+  --font-head: "Poppins", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+[data-theme="cosmos"][data-mode="dark"] {
+  --bg: #0f0720;
+  --bg-alt: #1a0e35;
+  --surface: #231548;
+  --text: #f3e8ff;
+  --muted: #a78bcc;
+  --border: #3b2070;
+  --header-bg: rgba(15, 7, 32, 0.9);
+  --shadow: 0 20px 50px -16px rgba(236, 72, 153, 0.2);
+}
+/* Fondo con gradiente ondulado */
+[data-theme="cosmos"] body {
+  background:
+    radial-gradient(ellipse 800px 400px at 20% 0%, rgba(124,58,237,0.15), transparent 60%),
+    radial-gradient(ellipse 600px 500px at 85% 10%, rgba(236,72,153,0.12), transparent 55%),
+    radial-gradient(ellipse 700px 600px at 50% 100%, rgba(124,58,237,0.1), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+[data-theme="cosmos"][data-mode="dark"] body {
+  background:
+    radial-gradient(ellipse 800px 400px at 20% 0%, rgba(124,58,237,0.25), transparent 60%),
+    radial-gradient(ellipse 600px 500px at 85% 10%, rgba(236,72,153,0.2), transparent 55%),
+    radial-gradient(ellipse 700px 600px at 50% 100%, rgba(124,58,237,0.15), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+/* Header con blur suave */
+[data-theme="cosmos"] .site-header {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+/* Tipografía con gradiente */
+[data-theme="cosmos"] .hero-text h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="cosmos"] .section-head h2 {
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+[data-theme="cosmos"][data-mode="dark"] .section-head h2 { color: var(--text); }
+[data-theme="cosmos"] .eyebrow {
+  color: var(--brand-accent);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+/* Botones con gradiente */
+[data-theme="cosmos"] .btn-accent {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px -8px rgba(236, 72, 153, 0.4);
+}
+[data-theme="cosmos"] .btn-accent:hover {
+  box-shadow: 0 12px 32px -8px rgba(236, 72, 153, 0.6);
+  transform: translateY(-2px);
+}
+[data-theme="cosmos"] .btn-ghost {
+  border-color: var(--border);
+  border-radius: 999px;
+  color: var(--brand-primary);
+}
+[data-theme="cosmos"] .btn-ghost:hover {
+  background: var(--bg-alt);
+  border-color: var(--brand-primary);
+}
+/* Cards con borde suave y sombra violeta */
+[data-theme="cosmos"] .service-card,
+[data-theme="cosmos"] .plan-card,
+[data-theme="cosmos"] .testimonial-card,
+[data-theme="cosmos"] .blog-card,
+[data-theme="cosmos"] .faq-item,
+[data-theme="cosmos"] .quote-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+[data-theme="cosmos"] .service-card:hover,
+[data-theme="cosmos"] .plan-card:hover,
+[data-theme="cosmos"] .testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px -20px rgba(124, 58, 237, 0.3);
+}
+[data-theme="cosmos"] .plan-card.featured {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 2px rgba(236,72,153,0.2), var(--shadow);
+}
+[data-theme="cosmos"] .plan-badge { background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent)); color: #fff; }
+[data-theme="cosmos"] .service-icon {
+  background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(236,72,153,0.1));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+/* Secciones */
+[data-theme="cosmos"] .section-alt { background: var(--bg-alt); }
+[data-theme="cosmos"] .section-contact {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+}
+/* Ondulación SVG entre hero y contenido */
+[data-theme="cosmos"] .hero { position: relative; overflow: visible; }
+[data-theme="cosmos"] .hero::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -50px;
+  height: 100px;
+  background: var(--bg-alt);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 100'%3E%3Cpath d='M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,100 L0,100Z' fill='%23000'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 100'%3E%3Cpath d='M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,100 L0,100Z' fill='%23000'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  z-index: 4;
+  pointer-events: none;
+}
+[data-theme="cosmos"] .hero.has-bg::after { display: none; }
+/* Carrusel redondeado */
+[data-theme="cosmos"] .mainSwiper {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+/* Footer con gradiente sutil */
+[data-theme="cosmos"] .site-footer {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+}
+/* Scroll reveal */
+@supports (animation-timeline: view()) {
+  [data-theme="cosmos"] .service-card,
+  [data-theme="cosmos"] .plan-card,
+  [data-theme="cosmos"] .testimonial-card,
+  [data-theme="cosmos"] .blog-card {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    animation: cosmos-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+@keyframes cosmos-reveal { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+
+/* =======================  TEMA BOLD  =======================
+   Inspirado en: Noah Fox — split colores sólidos, naranja intenso,
+   tipografía uppercase bold, botones con borde grueso, alto contraste.
+   ========================================================================== */
+[data-theme="bold"] {
+  --brand-primary: #1a1a1a;
+  --brand-accent: #ff6d00;
+  --accent-dark: #e56000;
+  --bg: #ffffff;
+  --bg-alt: #ff6d00;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #4a4a4a;
+  --border: #1a1a1a;
+  --header-bg: rgba(255, 255, 255, 0.98);
+  --radius: 4px;
+  --shadow: none;
+  --font-head: "Poppins", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+[data-theme="bold"][data-mode="dark"] {
+  --bg: #1a1a1a;
+  --bg-alt: #ff6d00;
+  --surface: #2a2a2a;
+  --text: #ffffff;
+  --muted: #b0b0b0;
+  --border: #ffffff;
+  --header-bg: rgba(26, 26, 26, 0.98);
+}
+[data-theme="bold"] body {
+  background: var(--bg);
+}
+/* Header con borde inferior grueso */
+[data-theme="bold"] .site-header {
+  border-bottom: 3px solid var(--border);
+  backdrop-filter: none;
+}
+/* Tipografía enorme, uppercase, apretada */
+[data-theme="bold"] .hero-text h1 {
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: var(--text);
+}
+[data-theme="bold"] .section-head h2 {
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+[data-theme="bold"] .eyebrow {
+  color: var(--brand-accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.78rem;
+}
+/* Botones con borde grueso */
+[data-theme="bold"] .btn {
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+}
+[data-theme="bold"] .btn-accent {
+  background: var(--brand-accent);
+  color: #fff;
+  border-color: var(--brand-accent);
+  box-shadow: none;
+}
+[data-theme="bold"] .btn-accent:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+[data-theme="bold"] .btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--text);
+}
+[data-theme="bold"] .btn-ghost:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+/* Cards con fondo naranja alternado */
+[data-theme="bold"] .service-card,
+[data-theme="bold"] .testimonial-card,
+[data-theme="bold"] .blog-card,
+[data-theme="bold"] .faq-item {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: none;
+  background: var(--surface);
+}
+[data-theme="bold"] .plan-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: none;
+  background: var(--surface);
+}
+[data-theme="bold"] .plan-card.featured {
+  background: var(--brand-accent);
+  color: #fff;
+  border-color: var(--brand-accent);
+}
+[data-theme="bold"] .plan-card.featured h3,
+[data-theme="bold"] .plan-card.featured p,
+[data-theme="bold"] .plan-card.featured li,
+[data-theme="bold"] .plan-card.featured .plan-price { color: #fff; }
+[data-theme="bold"] .plan-badge { background: var(--text); color: var(--bg); border-radius: var(--radius); }
+[data-theme="bold"] .service-icon {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+}
+/* Secciones alternadas con naranja */
+[data-theme="bold"] .section-alt {
+  background: var(--brand-accent);
+  color: #fff;
+}
+[data-theme="bold"] .section-alt .eyebrow,
+[data-theme="bold"] .section-alt h2,
+[data-theme="bold"] .section-alt p { color: #fff; }
+[data-theme="bold"] .section-alt .muted { color: rgba(255,255,255,0.8); }
+[data-theme="bold"] .section-alt .service-card,
+[data-theme="bold"] .section-alt .plan-card,
+[data-theme="bold"] .section-alt .testimonial-card {
+  background: #fff;
+  color: var(--text);
+  border-color: #fff;
+}
+/* Contacto negro */
+[data-theme="bold"] .section-contact {
+  background: var(--text);
+  color: var(--bg);
+}
+[data-theme="bold"] .section-contact .eyebrow,
+[data-theme="bold"] .section-contact h2,
+[data-theme="bold"] .section-contact p { color: var(--bg); }
+/* Quote card y formularios */
+[data-theme="bold"] .quote-card,
+[data-theme="bold"] .booking-form,
+[data-theme="bold"] .contact-form {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+}
+/* Carrusel sin border-radius */
+[data-theme="bold"] .mainSwiper {
+  border-radius: var(--radius);
+  border: 3px solid var(--border);
+  box-shadow: none;
+}
+/* Footer con fondo naranja */
+[data-theme="bold"] .site-footer {
+  background: var(--brand-accent);
+  color: #fff;
+  border-top: 3px solid var(--text);
+}
+[data-theme="bold"] .site-footer a { color: #fff; }
+/* Hover animación */
+[data-theme="bold"] .service-card:hover,
+[data-theme="bold"] .plan-card:hover,
+[data-theme="bold"] .blog-card:hover {
+  background: var(--brand-accent);
+  color: #fff;
+  border-color: var(--brand-accent);
+  transform: translateY(-2px);
+}
+[data-theme="bold"] .service-card:hover h3,
+[data-theme="bold"] .service-card:hover p,
+[data-theme="bold"] .plan-card:hover p,
+[data-theme="bold"] .blog-card:hover p { color: #fff; }
+/* Scroll reveal */
+@supports (animation-timeline: view()) {
+  [data-theme="bold"] .service-card,
+  [data-theme="bold"] .plan-card,
+  [data-theme="bold"] .testimonial-card,
+  [data-theme="bold"] .blog-card {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: bold-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+}
+@keyframes bold-reveal { to { opacity: 1; transform: translateX(0); } }
 
 
 /* =======================  TEMA FIESTAS PATRIAS (Chile 🇨🇱)  =======================
