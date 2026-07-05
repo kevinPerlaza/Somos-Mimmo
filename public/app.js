@@ -91,7 +91,7 @@ async function load() {
 }
 
 function applyTheme() {
-  document.documentElement.setAttribute("data-theme", DATA.theme || "classic");
+  document.documentElement.setAttribute("data-theme", DATA.theme || "fresh");
   const b = DATA.branding || {};
   const root = document.documentElement;
   if (b.useCustom) {

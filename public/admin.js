@@ -3,7 +3,6 @@ let DATA = {};
 let ME = null;
 const ICON_OPTIONS = ["home", "building", "sparkles", "leaf", "shield", "clock"];
 const THEMES = [
-  { id: "classic", name: "Classic", desc: "Verde profesional, calido y confiable.", colors: ["#015843", "#eff4f2", "#eb6435"] },
   { id: "fresh",   name: "Fresh",   desc: "Colores vivos, formas organicas y anti-grid.", colors: ["#06a17a", "#fffdf7", "#ff5a3c"] },
   { id: "glass",   name: "✨ Glass",  desc: "Cristal esmerilado, blobs organicos, profundidad y glow.", colors: ["#0d9488", "#0f172a", "#f472b6"] },
   { id: "neo",     name: "⚡ Neo",    desc: "Bordes gruesos, sombras duras, tipografia bold. Personalidad.", colors: ["#1a1a2e", "#fffef5", "#ff6b35"] },
