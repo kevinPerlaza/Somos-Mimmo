@@ -19,3 +19,6 @@ LEGO_logo.svg.webp
 limpia po.jpg
 logo.png
 !public/assets/logo.png
+
+# Graphify (grafo de conocimiento, se genera localmente)
+graphify-out/
