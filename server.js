@@ -541,7 +541,7 @@ app.put("/api/content", requireAuth, async (req, res) => {
     "theme", "branding", "site", "hero", "carouselSettings", "about",
     "services", "testimonials", "beforeAfter", "plans", "clients", "posts",
     "videos", "carousel", "quoteForm", "i18n", "bookingSettings", "decorations",
-    "effects", "quoteCalc", "faqs",
+    "effects", "quoteCalc", "faqs", "sections",
   ];
   await updateContent((content) => {
     for (const key of allowed) if (body[key] !== undefined) content[key] = body[key];

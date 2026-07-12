@@ -197,6 +197,7 @@ async function loadDashboard() {
 }
 
 function renderAll() {
+  renderSections();
   renderDesign(); renderCarouselSettings(); renderSlides(); renderContent();
   renderPlans(); renderBa(); renderTestimonials(); renderClients();
   renderVideos(); renderBlog(); renderContact(); renderEmail(); renderAnimations();
@@ -259,6 +260,77 @@ function makeReorderable(container, arr, onChange) {
     });
   });
 }
+
+/* ============================ SECCIONES ============================ */
+const SECTION_LABELS = {
+  planes: "💲 Planes y precios",
+  cotizador: "🧮 Cotizador",
+  antesdespues: "🔄 Antes y despues",
+  nosotros: "👥 Quienes somos",
+  testimonios: "⭐ Testimonios",
+  clientes: "🤝 Clientes",
+  galeria: "🎬 Galeria de video",
+  blog: "📰 Blog",
+  agenda: "📅 Agendar cita",
+  faq: "❓ Preguntas frecuentes",
+  contacto: "📞 Contacto",
+};
+const DEFAULT_SECTIONS = [
+  { id: "planes", enabled: true, nav: true },
+  { id: "cotizador", enabled: true, nav: true },
+  { id: "antesdespues", enabled: true, nav: false },
+  { id: "nosotros", enabled: true, nav: true },
+  { id: "testimonios", enabled: true, nav: true },
+  { id: "clientes", enabled: true, nav: false },
+  { id: "galeria", enabled: true, nav: false },
+  { id: "blog", enabled: true, nav: true },
+  { id: "agenda", enabled: true, nav: true },
+  { id: "faq", enabled: true, nav: false },
+  { id: "contacto", enabled: true, nav: true },
+];
+
+function renderSections() {
+  // Normalizar: si faltan secciones nuevas en los datos, agregarlas al final
+  if (!Array.isArray(DATA.sections) || !DATA.sections.length) {
+    DATA.sections = JSON.parse(JSON.stringify(DEFAULT_SECTIONS));
+  } else {
+    const known = new Set(DATA.sections.map((s) => s.id));
+    DEFAULT_SECTIONS.forEach((d) => { if (!known.has(d.id)) DATA.sections.push({ ...d }); });
+  }
+  const wrap = $("sectionsEditor");
+  wrap.innerHTML = "";
+  DATA.sections.forEach((sec) => {
+    if (!SECTION_LABELS[sec.id]) return;
+    const el = document.createElement("div");
+    el.className = "edit-item section-item"; el.dataset.id = sec.id;
+    el.innerHTML = `
+      <div class="row-head">
+        <span class="grip">☰</span>
+        <span class="section-name">${SECTION_LABELS[sec.id]}</span>
+        <label class="section-toggle" title="Visible en el sitio">
+          <input type="checkbox" data-k="enabled" ${sec.enabled !== false ? "checked" : ""} /> 👁️
+        </label>
+        <label class="section-toggle" title="Aparece en el menu superior">
+          <input type="checkbox" data-k="nav" ${sec.nav !== false ? "checked" : ""} /> 📋
+        </label>
+      </div>`;
+    el.querySelectorAll("input[type=checkbox]").forEach((chk) => {
+      chk.addEventListener("change", (e) => {
+        sec[e.target.dataset.k] = e.target.checked;
+        el.classList.toggle("section-off", sec.enabled === false);
+        show("sectionsSaveBar");
+      });
+    });
+    el.classList.toggle("section-off", sec.enabled === false);
+    wrap.appendChild(el);
+  });
+  makeReorderable(wrap, DATA.sections, () => { renderSections(); show("sectionsSaveBar"); });
+}
+$("saveSections").addEventListener("click", async () => {
+  await saveKeys({ sections: DATA.sections });
+  $("sectionsSaveBar").hidden = true;
+  toast("Secciones actualizadas ✓");
+});
 
 /* ============================ DISENO ============================ */
 function renderDesign() {

@@ -168,6 +168,53 @@ function applyI18nLabels() {
   document.getElementById("langToggle").textContent = LANG === "es" ? "EN" : "ES";
 }
 
+// Metadata de secciones gestionables (orden/visibilidad/menu desde admin)
+const SECTION_META = {
+  inicio:       { es: "Inicio", en: "Home", href: "#inicio" },
+  planes:       { es: "Planes", en: "Plans", href: "#planes" },
+  cotizador:    { es: "Cotizador", en: "Quote", href: "#cotizador" },
+  antesdespues: { es: "Antes y despues", en: "Before & After", href: "#antesdespues" },
+  nosotros:     { es: "Nosotros", en: "About", href: "#nosotros" },
+  testimonios:  { es: "Testimonios", en: "Testimonials", href: "#testimonios" },
+  clientes:     { es: "Clientes", en: "Clients", href: "#clientes" },
+  galeria:      { es: "Galeria", en: "Gallery", href: "#galeria" },
+  blog:         { es: "Blog", en: "Blog", href: "#blog" },
+  agenda:       { es: "Agendar", en: "Book", href: "#agenda" },
+  faq:          { es: "FAQ", en: "FAQ", href: "#faq" },
+  contacto:     { es: "Contacto", en: "Contact", href: "#contacto" },
+};
+
+// Reordena las secciones del <main>, oculta las deshabilitadas y reconstruye el menu.
+function applySectionLayout() {
+  const cfg = Array.isArray(DATA.sections) ? DATA.sections : [];
+  if (!cfg.length) return;
+  const main = document.querySelector("main");
+  const nav = document.getElementById("navLinks");
+  const navParts = [];
+  // Inicio siempre primero en el menu
+  navParts.push(`<a href="#inicio">${LANG === "en" ? "Home" : "Inicio"}</a>`);
+
+  cfg.forEach((sec) => {
+    const meta = SECTION_META[sec.id];
+    if (!meta) return;
+    const el = document.getElementById(sec.id);
+    if (el && main && el.parentElement === main) main.appendChild(el); // reordenar
+    if (el && sec.enabled === false) {
+      el.style.display = "none";
+      el.dataset.sectionOff = "1";
+    } else if (el) {
+      delete el.dataset.sectionOff;
+    }
+    if (sec.enabled !== false && sec.nav !== false) {
+      navParts.push(`<a href="${meta.href}">${LANG === "en" ? meta.en : meta.es}</a>`);
+    }
+  });
+  if (nav) {
+    nav.innerHTML = navParts.join("");
+    bindNavLinks();
+  }
+}
+
 function render() {
   applyI18nLabels();
   const site = DATA.site || {}, hero = DATA.hero || {}, about = DATA.about || {};
@@ -228,6 +275,7 @@ function render() {
   applyFestiveTheme();
   bindContactForm();
   applyMobileCollapse();
+  applySectionLayout();
 }
 
 // ===== Efectos (microinteracciones + cursor personalizado) =====
@@ -1069,7 +1117,13 @@ function bindContactForm() {
 
 // ===== Utilidades =====
 function setText(id, value) { const el = document.getElementById(id); if (el && value != null && value !== "") el.textContent = value; }
-function toggleSection(id, show) { const el = document.getElementById(id); if (el) el.style.display = show ? "" : "none"; }
+function toggleSection(id, show) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  // Si el admin desactivo la seccion, se mantiene oculta pase lo que pase.
+  if (el.dataset.sectionOff === "1") { el.style.display = "none"; return; }
+  el.style.display = show ? "" : "none";
+}
 function escapeHtml(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -1142,7 +1196,13 @@ function setMenu(open) {
 }
 navToggle.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
 if (navBackdrop) navBackdrop.addEventListener("click", () => setMenu(false));
-document.querySelectorAll("#navLinks a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+// Cierra el menu movil al hacer click en un enlace (re-bindeable tras reconstruir el nav)
+function bindNavLinks() {
+  document.querySelectorAll("#navLinks a").forEach((a) => {
+    a.onclick = () => setMenu(false);
+  });
+}
+bindNavLinks();
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 window.addEventListener("resize", () => { if (window.innerWidth > 1024) setMenu(false); });
 

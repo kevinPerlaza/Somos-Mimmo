@@ -31,6 +31,7 @@
           <button class="snav" data-tab="design">🎨 Diseno</button>
           <button class="snav" data-tab="carousel">🖼️ Carrusel</button>
           <button class="snav" data-tab="animations">✨ Animaciones</button>
+          <button class="snav" data-tab="sections">🧩 Secciones</button>
           <button class="snav" data-tab="content">📝 Textos y servicios</button>
           <button class="snav" data-tab="plans">💲 Planes</button>
           <button class="snav" data-tab="quotecalc">🧮 Cotizador</button>
@@ -75,6 +76,24 @@
               <div class="card">
                 <h3>Actividad reciente</h3>
                 <div id="dashActivity"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== Secciones ===== -->
+          <section class="panel" id="tab-sections">
+            <h2>Secciones del sitio</h2>
+            <p class="muted">Enciende o apaga secciones, decide cuales aparecen en el menu superior y arrastralas para cambiar el orden en que se muestran en la pagina.</p>
+            <div class="card">
+              <div class="sections-legend">
+                <span>👁️ Visible en el sitio</span>
+                <span>📋 Aparece en el menu</span>
+                <span>☰ Arrastra para reordenar</span>
+              </div>
+              <div class="reorder-list" id="sectionsEditor"></div>
+              <div class="save-bar" id="sectionsSaveBar" hidden>
+                <span>Cambios sin guardar</span>
+                <button class="btn btn-accent" id="saveSections">Guardar secciones</button>
               </div>
             </div>
           </section>
