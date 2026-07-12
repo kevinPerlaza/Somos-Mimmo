@@ -134,8 +134,11 @@ h1, h2, h3 { font-family: "Poppins", sans-serif; }
 
 /* Animaciones */
 .deco-choices { display: flex; flex-wrap: wrap; gap: 10px; }
-.deco-choice { display: flex !important; flex-direction: row; align-items: center; gap: 7px; margin: 0 !important; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; font-weight: 500; color: var(--green-800); cursor: pointer; }
+.deco-choice { display: flex !important; flex-direction: row; align-items: center; gap: 7px; margin: 0 !important; padding: 6px 14px 6px 10px; border: 1px solid var(--line); border-radius: 999px; font-weight: 500; color: var(--green-800); cursor: pointer; }
 .deco-choice input { accent-color: var(--accent); }
+.deco-choice .deco-ico { display: inline-grid; place-items: center; width: 24px; height: 24px; color: var(--green-700, #015843); }
+.deco-choice .deco-ico svg { width: 22px; height: 22px; }
+.deco-choice:has(input:checked) { border-color: var(--accent); background: var(--green-100); }
 
 /* Citas */
 .days-row { display: flex; flex-wrap: wrap; gap: 6px; }

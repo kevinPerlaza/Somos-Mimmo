@@ -392,9 +392,36 @@ $("saveDesign").addEventListener("click", async () => {
 });
 
 /* ============================ ANIMACIONES ============================ */
+// SVGs de iconos decorativos para la vista previa (mismos que public/app.js CLEAN_ICONS)
+const DECO_SVGS = {
+  mop: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6v30"/><path d="M22 36h20l-3 8H25z"/><path d="M24 44c-2 6-4 9-9 14M30 44v14M40 44c2 6 4 9 9 14"/></svg>',
+  vacuum: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="42" r="14"/><circle cx="24" cy="42" r="4"/><path d="M34 34l14-20c2-3 7-2 7 2v8"/><rect x="50" y="22" width="9" height="10" rx="2"/></svg>',
+  spray: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M26 24h14v30a4 4 0 0 1-4 4H30a4 4 0 0 1-4-4z"/><path d="M26 24v-6h10v6"/><path d="M36 14h8l6-4M36 20h10M50 16l6 2"/></svg>',
+  broom: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M44 8L26 34"/><path d="M16 46c4-10 14-16 22-12l4 2c2 1 3 3 2 5l-2 4z"/><path d="M18 44l-4 12M26 48l-2 10M34 50l0 10"/></svg>',
+  bucket: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 22h36l-4 32H18z"/><path d="M16 22c0-9 32-9 32 0"/></svg>',
+  sponge: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="26" width="40" height="24" rx="6"/><path d="M12 36h40"/><path d="M20 36v-6c0-3 3-5 6-4M32 36v-8c0-3 3-4 6-3"/></svg>',
+  bubbles: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="24" cy="28" r="12"/><circle cx="44" cy="20" r="7"/><circle cx="42" cy="42" r="9"/><circle cx="20" cy="24" r="3" fill="currentColor" stroke="none"/></svg>',
+  glove: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 56V30c0-3 4-3 4 0v-4c0-3 4-3 4 0v-2c0-3 4-3 4 0v2c0-3 4-3 4 0v8c4-2 6 1 4 6l-4 8v0H22z"/></svg>',
+  soap: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="30" width="36" height="22" rx="6"/><path d="M20 30c0-6 24-6 24 0"/><circle cx="46" cy="16" r="4"/><circle cx="38" cy="10" r="2.5"/></svg>',
+  brush: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="22" width="32" height="12" rx="4"/><path d="M20 34v8M28 34v10M36 34v8M44 34v10"/><path d="M44 22l8-8"/></svg>',
+  duster: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 58V34"/><path d="M32 34c-8 0-14-6-14-14 6 0 10 2 12 6 2-6 8-10 16-10-2 8-8 14-14 14z"/></svg>',
+  squeegee: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 20h36"/><path d="M14 20v6h36v-6"/><path d="M32 26v26"/><path d="M22 40l-4 12M42 40l4 12"/></svg>',
+  towel: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14h32v34a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z"/><path d="M16 44h32M22 14v30"/></svg>',
+  wateringcan: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 30h22v18a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4z"/><path d="M40 34l12-6M52 24l-4 8"/><path d="M22 30c0-6 12-6 12 0"/></svg>',
+  sparkle: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12l4 12 12 4-12 4-4 12-4-12-12-4 12-4z"/><path d="M48 44l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>',
+  leaf: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 50C14 28 30 14 52 14 52 36 36 50 14 50z"/><path d="M14 50c8-16 20-26 34-30"/></svg>',
+  drop: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8c8 11 16 19 16 28a16 16 0 0 1-32 0c0-9 8-17 16-28z"/></svg>',
+  cloth: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c8-6 12 6 20 0s12-6 20 0v20c-8 6-12-6-20 0s-12 6-20 0z"/><path d="M12 32c8-6 12 6 20 0s12-6 20 0"/></svg>',
+  basket: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 26h32l-3 26H19z"/><path d="M22 26l4-12M42 26l-4-12"/><path d="M20 38h24"/></svg>',
+  iron: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 44c0-12 10-20 24-20h16v8H20a8 8 0 0 0-8 8z"/><path d="M12 44h40"/><path d="M40 24v-6h8"/></svg>',
+  trashbin: '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20h32"/><path d="M20 20l3 32h18l3-32"/><path d="M26 20v-6h12v6M28 30v14M36 30v14"/></svg>',
+};
 const DECO_ICONS = {
   mop: "Trapero", vacuum: "Aspiradora", spray: "Atomizador", broom: "Escoba",
   bucket: "Balde", sponge: "Esponja", bubbles: "Burbujas", glove: "Guante",
+  soap: "Jabon", brush: "Cepillo", duster: "Plumero", squeegee: "Limpiavidrios",
+  towel: "Toalla", wateringcan: "Regadera", sparkle: "Brillo", leaf: "Hoja",
+  drop: "Gota", cloth: "Pano", basket: "Canasta", iron: "Plancha", trashbin: "Basurero",
 };
 function renderAnimations() {
   const d = DATA.decorations = DATA.decorations || {};
@@ -408,7 +435,7 @@ function renderAnimations() {
   Object.entries(DECO_ICONS).forEach(([key, label]) => {
     const lab = document.createElement("label");
     lab.className = "deco-choice";
-    lab.innerHTML = `<input type="checkbox" value="${key}" ${chosen.includes(key) ? "checked" : ""} /> ${label}`;
+    lab.innerHTML = `<input type="checkbox" value="${key}" ${chosen.includes(key) ? "checked" : ""} /><span class="deco-ico">${DECO_SVGS[key] || ""}</span> ${label}`;
     lab.querySelector("input").addEventListener("change", () => show("decoSaveBar"));
     wrap.appendChild(lab);
   });
