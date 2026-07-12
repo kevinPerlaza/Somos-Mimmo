@@ -108,6 +108,9 @@ h1, h2, h3 { font-family: "Poppins", sans-serif; }
 .edit-item .grip { cursor: grab; color: var(--muted); font-size: 1.1rem; user-select: none; }
 .edit-item input[type="text"], .edit-item textarea, .edit-item select { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; font: inherit; font-size: 0.88rem; }
 .edit-item .remove { margin-left: auto; }
+.edit-item .icon-preview { flex-shrink: 0; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--green-100); color: var(--green-700, #015843); }
+.edit-item .icon-preview svg { width: 22px; height: 22px; }
+.edit-item .row-head select { flex: 1; }
 .edit-item .thumb { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; background: var(--green-100); border: 1px solid var(--line); }
 .ba-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .upload-mini { border: 1px dashed var(--green-500); border-radius: 8px; padding: 10px; text-align: center; font-size: 0.8rem; cursor: pointer; color: var(--muted); }
