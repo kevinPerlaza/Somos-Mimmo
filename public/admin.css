@@ -110,6 +110,9 @@ h1, h2, h3 { font-family: "Poppins", sans-serif; }
 .edit-item .remove { margin-left: auto; }
 /* Gestor de secciones */
 .sections-legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; }
+.maint-card { border-left: 4px solid #f5a623; margin-bottom: 18px; }
+.maint-card label { display: block; margin-top: 10px; font-size: 0.88rem; font-weight: 600; }
+.maint-card label input[type="text"] { width: 100%; margin-top: 5px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; font: inherit; font-weight: 400; }
 .section-item .section-name { font-weight: 600; flex: 1; }
 .section-item .section-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 1.05rem; cursor: pointer; white-space: nowrap; }
 .section-item .section-toggle input { width: auto; margin: 0; cursor: pointer; }

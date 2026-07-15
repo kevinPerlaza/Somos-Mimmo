@@ -84,6 +84,19 @@
           <section class="panel" id="tab-sections">
             <h2>Secciones del sitio</h2>
             <p class="muted">Enciende o apaga secciones, decide cuales aparecen en el menu superior y arrastralas para cambiar el orden en que se muestran en la pagina.</p>
+
+            <div class="card maint-card">
+              <h3>🚧 Modo mantenimiento</h3>
+              <p class="muted">Cuando esta activo, los visitantes veran una pagina de "trabajando en ella" en vez del sitio. El panel de administracion sigue funcionando normalmente.</p>
+              <label class="checkbox"><input type="checkbox" id="maintEnabled" /> Activar modo mantenimiento</label>
+              <label>Titulo<input type="text" id="maintTitle" maxlength="120" placeholder="Estamos trabajando en el sitio" /></label>
+              <label>Mensaje<input type="text" id="maintMessage" maxlength="300" placeholder="Volvemos muy pronto. Gracias por tu paciencia." /></label>
+              <div class="save-bar" id="maintSaveBar" hidden>
+                <span>Cambios sin guardar</span>
+                <button class="btn btn-accent" id="saveMaint">Guardar</button>
+              </div>
+            </div>
+
             <div class="card">
               <div class="sections-legend">
                 <span>👁️ Visible en el sitio</span>

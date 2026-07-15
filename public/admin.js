@@ -130,7 +130,7 @@ async function loadData() {
   DATA = await (await api("/api/admin/content")).json();
   ["services", "testimonials", "beforeAfter", "plans", "clients", "posts", "videos", "carousel", "users", "bookings", "faqs"]
     .forEach((k) => { if (!Array.isArray(DATA[k])) DATA[k] = []; });
-  ["site", "hero", "about", "branding", "carouselSettings", "quoteForm", "email", "i18n", "bookingSettings", "decorations", "effects", "quoteCalc"]
+  ["site", "hero", "about", "branding", "carouselSettings", "quoteForm", "email", "i18n", "bookingSettings", "decorations", "effects", "quoteCalc", "maintenance"]
     .forEach((k) => { DATA[k] = DATA[k] || {}; });
   DATA.i18n.en = DATA.i18n.en || {};
   renderAll();
@@ -197,7 +197,7 @@ async function loadDashboard() {
 }
 
 function renderAll() {
-  renderSections();
+  renderSections(); renderMaintenance();
   renderDesign(); renderCarouselSettings(); renderSlides(); renderContent();
   renderPlans(); renderBa(); renderTestimonials(); renderClients();
   renderVideos(); renderBlog(); renderContact(); renderEmail(); renderAnimations();
@@ -330,6 +330,26 @@ $("saveSections").addEventListener("click", async () => {
   await saveKeys({ sections: DATA.sections });
   $("sectionsSaveBar").hidden = true;
   toast("Secciones actualizadas ✓");
+});
+
+function renderMaintenance() {
+  const m = DATA.maintenance = DATA.maintenance || {};
+  $("maintEnabled").checked = !!m.enabled;
+  $("maintTitle").value = m.title || "";
+  $("maintMessage").value = m.message || "";
+  ["maintEnabled", "maintTitle", "maintMessage"].forEach((id) =>
+    $(id).addEventListener("input", () => show("maintSaveBar")));
+  $("maintEnabled").addEventListener("change", () => show("maintSaveBar"));
+}
+$("saveMaint").addEventListener("click", async () => {
+  DATA.maintenance = {
+    enabled: $("maintEnabled").checked,
+    title: $("maintTitle").value.trim() || "Estamos trabajando en el sitio",
+    message: $("maintMessage").value.trim() || "Volvemos muy pronto. Gracias por tu paciencia.",
+  };
+  await saveKeys({ maintenance: DATA.maintenance });
+  $("maintSaveBar").hidden = true;
+  toast($("maintEnabled").checked ? "Modo mantenimiento ACTIVADO 🚧" : "Modo mantenimiento desactivado ✓");
 });
 
 /* ============================ DISENO ============================ */

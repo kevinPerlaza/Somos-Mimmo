@@ -541,7 +541,7 @@ app.put("/api/content", requireAuth, async (req, res) => {
     "theme", "branding", "site", "hero", "carouselSettings", "about",
     "services", "testimonials", "beforeAfter", "plans", "clients", "posts",
     "videos", "carousel", "quoteForm", "i18n", "bookingSettings", "decorations",
-    "effects", "quoteCalc", "faqs", "sections",
+    "effects", "quoteCalc", "faqs", "sections", "maintenance",
   ];
   await updateContent((content) => {
     for (const key of allowed) if (body[key] !== undefined) content[key] = body[key];
@@ -996,7 +996,8 @@ app.use("/uploads", (req, res, next) => {
 });
 
 // ---------- Estaticos ----------
-app.use(express.static(SERVE_DIR));
+// index:false para que la ruta "/" pase por nuestro handler (permite modo mantenimiento)
+app.use(express.static(SERVE_DIR, { index: false }));
 // uploads siempre desde public/ (dist/ no tiene uploads)
 if (SERVE_DIR !== PUBLIC) app.use("/uploads", express.static(UPLOADS));
 
@@ -1026,7 +1027,52 @@ app.get("/admin", (req, res) => {
   res.sendFile(path.join(SERVE_DIR, "admin.html"));
 });
 
-app.get("/", (req, res) => res.sendFile(path.join(SERVE_DIR, "index.html")));
+// Pagina de mantenimiento (autocontenida, sin dependencias)
+function maintenancePage(content) {
+  const site = content.site || {};
+  const m = content.maintenance || {};
+  const brand = esc(site.brand || "Mimmo");
+  const logo = site.logo ? esc(site.logo) : "assets/logo.png";
+  const title = esc(m.title || "Estamos trabajando en el sitio");
+  const message = esc(m.message || "Volvemos muy pronto. Gracias por tu paciencia.");
+  const primary = (content.branding && content.branding.primary) || "#015843";
+  const accent = (content.branding && content.branding.accent) || "#eb6435";
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${brand} · ${title}</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="${logo}" />
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; min-height:100vh; display:grid; place-items:center;
+    background: radial-gradient(900px 500px at 50% -10%, ${primary}22, transparent 60%), #f6faf8; color:#14201c; text-align:center; padding:24px; }
+  .card { max-width: 520px; }
+  .logo { max-height: 70px; margin: 0 auto 28px; display:block; }
+  .cog { width:74px; height:74px; margin:0 auto 24px; color:${accent}; animation: spin 6s linear infinite; }
+  h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); color:${primary}; margin-bottom:14px; line-height:1.15; }
+  p { font-size:1.05rem; color:#5d6f69; line-height:1.6; }
+  .brand { margin-top:28px; font-weight:700; letter-spacing:0.02em; color:${primary}; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .cog { animation: none; } }
+</style></head>
+<body><div class="card">
+  <img src="${logo}" alt="${brand}" class="logo" onerror="this.style.display='none'" />
+  <svg class="cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1l2.1-2.1M17 7l2.1-2.1"/></svg>
+  <h1>${title}</h1>
+  <p>${message}</p>
+  <p class="brand">${brand}</p>
+</div></body></html>`;
+}
+
+app.get("/", (req, res) => {
+  const content = readContent();
+  if (content.maintenance && content.maintenance.enabled) {
+    return res.status(503).set("Retry-After", "3600").send(maintenancePage(content));
+  }
+  res.sendFile(path.join(SERVE_DIR, "index.html"));
+});
 
 app.use((err, req, res, next) => {
   if (err) {
