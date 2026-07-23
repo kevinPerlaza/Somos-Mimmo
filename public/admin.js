@@ -121,16 +121,17 @@ async function startApp() {
 
 // Aviso si el admin intenta salir con cambios sin guardar (barras de guardado visibles).
 function hasUnsavedChanges() {
-  return [...document.querySelectorAll(".save-bar")].some((bar) => !bar.hidden);
+  return [...document.querySelectorAll(".save-bar")].some((bar) => !bar.hidden)
+    || (typeof quoteHasUnsavedChanges === "function" && quoteHasUnsavedChanges());
 }
 window.addEventListener("beforeunload", (e) => {
   if (hasUnsavedChanges()) { e.preventDefault(); e.returnValue = ""; }
 });
 async function loadData() {
   DATA = await (await api("/api/admin/content")).json();
-  ["services", "testimonials", "beforeAfter", "plans", "clients", "posts", "videos", "carousel", "users", "bookings", "faqs"]
+  ["services", "testimonials", "beforeAfter", "plans", "clients", "posts", "videos", "carousel", "users", "bookings", "faqs", "quotations"]
     .forEach((k) => { if (!Array.isArray(DATA[k])) DATA[k] = []; });
-  ["site", "hero", "about", "branding", "carouselSettings", "quoteForm", "email", "i18n", "bookingSettings", "decorations", "effects", "quoteCalc", "maintenance"]
+  ["site", "hero", "about", "branding", "carouselSettings", "quoteForm", "email", "i18n", "bookingSettings", "decorations", "effects", "quoteCalc", "quoteSettings", "maintenance"]
     .forEach((k) => { DATA[k] = DATA[k] || {}; });
   DATA.i18n.en = DATA.i18n.en || {};
   renderAll();
@@ -149,6 +150,7 @@ document.querySelectorAll(".snav").forEach((b) =>
     if (b.dataset.tab === "users") renderUsers();
     if (b.dataset.tab === "bookings") renderBookings();
     if (b.dataset.tab === "discounts") renderDiscounts();
+    if (b.dataset.tab === "quotes" && typeof renderQuotesAdmin === "function") renderQuotesAdmin();
   })
 );
 $("hamburger").addEventListener("click", () => $("sidebar").classList.toggle("open"));
@@ -157,14 +159,14 @@ $("hamburger").addEventListener("click", () => $("sidebar").classList.toggle("op
 const STAT_LABELS = {
   bookingsUpcoming: "Citas proximas", bookingsPending: "Citas pendientes",
   services: "Servicios", plans: "Planes", carousel: "Imagenes", videos: "Videos",
-  posts: "Entradas de blog", testimonials: "Testimonios", faqs: "Preguntas (FAQ)",
+  posts: "Entradas de blog", testimonials: "Testimonios", faqs: "Preguntas (FAQ)", quotations: "Cotizaciones",
 };
 async function loadDashboard() {
   try {
     const s = await (await api("/api/admin/summary")).json();
     const stats = $("dashStats");
     const c = s.counts || {};
-    const order = ["bookingsUpcoming", "bookingsPending", "services", "plans", "carousel", "videos", "posts", "testimonials", "faqs"];
+    const order = ["bookingsUpcoming", "bookingsPending", "quotations", "services", "plans", "carousel", "videos", "posts", "testimonials", "faqs"];
     stats.innerHTML = order.map((k) => `
       <div class="dash-stat">
         <span class="dash-num">${c[k] != null ? c[k] : 0}</span>
@@ -202,6 +204,7 @@ function renderAll() {
   renderPlans(); renderBa(); renderTestimonials(); renderClients();
   renderVideos(); renderBlog(); renderContact(); renderEmail(); renderAnimations();
   renderQuoteCalcAdmin(); renderFaq();
+  if (typeof renderQuotesAdmin === "function") renderQuotesAdmin();
 }
 
 // ===== Subida generica =====
@@ -1139,6 +1142,7 @@ const TOUR_STEPS = [
   { tab: "content", el: "#tab-content", text: "<b>Textos y servicios</b>: edita el título, la descripción del inicio y administra los servicios que ofreces." },
   { tab: "plans", el: "#tab-plans", text: "<b>Planes</b>: crea paquetes con precio y características. Marca uno como destacado." },
   { tab: "quotecalc", el: "#tab-quotecalc", text: "<b>Cotizador</b>: configura precios para que el visitante calcule un estimado al instante." },
+  { tab: "quotes", el: "#tab-quotes", text: "<b>Cotizaciones PDF</b>: arma propuestas con los servicios del proyecto, guarda el historial y descarga documentos listos para enviar." },
   { tab: "bookings", el: "#tab-bookings", text: "<b>Citas</b>: define disponibilidad (días, horarios) y gestiona las reservas de tus clientes." },
   { tab: "discounts", el: "#tab-discounts", text: "<b>Descuentos</b>: crea cupones para eventos especiales. Tus clientes los ingresan en el cotizador." },
   { tab: "email", el: "#tab-email", text: "<b>Correo</b>: configura el SMTP para recibir cotizaciones y que tus clientes reciban confirmación." },

@@ -57,6 +57,7 @@ Usuario inicial: `admin` / contraseña de `ADMIN_PASSWORD` (por defecto `mimmo20
 | Textos y servicios | Hero, "quiénes somos", servicios, versiones EN |
 | Planes | Paquetes con precio y características |
 | Cotizador | Tipos de espacio, extras, precios, frecuencias |
+| Cotizaciones PDF | Crear propuestas desde el catálogo, agregar partidas personalizadas, calcular totales, guardar historial y descargar PDF |
 | Citas | Disponibilidad y gestión de reservas |
 | Descuentos | Cupones con fecha, límite de usos, activar/desactivar |
 | Correo | Credenciales SMTP + contenido del mensaje |

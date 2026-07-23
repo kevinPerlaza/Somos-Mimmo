@@ -9,7 +9,7 @@ const PUBLIC = path.join(__dirname, "..", "public");
 const DIST = path.join(__dirname, "..", "dist");
 
 // Archivos a minificar
-const JS_FILES = ["app.js", "admin.js", "i18n.js"];
+const JS_FILES = ["app.js", "admin.js", "admin-quotes.js", "i18n.js"];
 const CSS_FILES = ["styles.css", "themes.css", "admin.css"];
 
 // Copiar todo de public/ a dist/ excepto los JS/CSS (que se minifican)

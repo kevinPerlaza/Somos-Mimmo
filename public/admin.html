@@ -35,6 +35,7 @@
           <button class="snav" data-tab="content">📝 Textos y servicios</button>
           <button class="snav" data-tab="plans">💲 Planes</button>
           <button class="snav" data-tab="quotecalc">🧮 Cotizador</button>
+          <button class="snav" data-tab="quotes">📄 Cotizaciones PDF</button>
           <button class="snav" data-tab="beforeafter">🔄 Antes y despues</button>
           <button class="snav" data-tab="testimonials">⭐ Testimonios</button>
           <button class="snav" data-tab="clients">🤝 Clientes</button>
@@ -301,6 +302,124 @@
             <div class="save-bar" id="quotecalcSaveBar" hidden><span>Cambios sin guardar</span><button class="btn btn-accent" id="saveQuoteCalc">Guardar cotizador</button></div>
           </section>
 
+          <!-- ===== Cotizaciones PDF ===== -->
+          <section class="panel" id="tab-quotes">
+            <div class="quote-panel-head">
+              <div>
+                <h2>Cotizaciones PDF</h2>
+                <p class="muted">Crea propuestas con los servicios, planes y precios configurados en Mimmo.</p>
+              </div>
+              <button class="btn btn-accent" id="quoteNew">+ Nueva cotizacion</button>
+            </div>
+
+            <div class="quote-layout">
+              <div class="quote-builder">
+                <div class="card quote-card">
+                  <div class="quote-card-title">
+                    <div><span class="quote-step">1</span><h3>Cliente y documento</h3></div>
+                    <span class="quote-draft-state" id="quoteDraftState">Nueva</span>
+                  </div>
+                  <div class="quote-grid-3">
+                    <label>Nº de cotizacion<input type="text" id="quoteNumber" readonly /></label>
+                    <label>Fecha de emision<input type="date" id="quoteDate" /></label>
+                    <label>Valida hasta<input type="date" id="quoteValidUntil" /></label>
+                  </div>
+                  <div class="quote-grid-2">
+                    <label>Nombre o empresa *<input type="text" id="quoteClientName" maxlength="140" placeholder="Cliente o razon social" /></label>
+                    <label>RUT / identificacion<input type="text" id="quoteClientId" maxlength="60" placeholder="Opcional" /></label>
+                    <label>Correo<input type="email" id="quoteClientEmail" maxlength="160" placeholder="cliente@correo.com" /></label>
+                    <label>Telefono<input type="text" id="quoteClientPhone" maxlength="50" placeholder="+56..." /></label>
+                  </div>
+                  <label>Direccion del servicio<input type="text" id="quoteClientAddress" maxlength="220" placeholder="Lugar donde se realizara el servicio" /></label>
+                </div>
+
+                <div class="card quote-card">
+                  <div class="quote-card-title">
+                    <div><span class="quote-step">2</span><h3>Servicios a cotizar</h3></div>
+                  </div>
+                  <div class="quote-catalog-add">
+                    <label>Catalogo del proyecto
+                      <select id="quoteCatalog"></select>
+                    </label>
+                    <label>Cantidad
+                      <input type="number" id="quoteCatalogQty" min="0.01" step="0.01" value="1" />
+                    </label>
+                    <button class="btn btn-accent" id="quoteAddCatalog">Agregar</button>
+                    <button class="btn btn-ghost" id="quoteAddCustom">+ Item personalizado</button>
+                  </div>
+                  <p class="quote-catalog-help" id="quoteCatalogHelp"></p>
+                  <div class="quote-items-wrap">
+                    <table class="quote-items-table">
+                      <thead><tr><th>Descripcion</th><th>Detalle</th><th>Cant.</th><th>Unidad</th><th>Precio unit.</th><th>Total</th><th></th></tr></thead>
+                      <tbody id="quoteItems"></tbody>
+                    </table>
+                  </div>
+                  <div class="quote-empty" id="quoteItemsEmpty">Agrega un servicio del catalogo o crea un item personalizado.</div>
+                </div>
+
+                <div class="card quote-card">
+                  <div class="quote-card-title">
+                    <div><span class="quote-step">3</span><h3>Totales y condiciones</h3></div>
+                  </div>
+                  <div class="quote-grid-3">
+                    <label>Moneda / simbolo<input type="text" id="quoteCurrency" maxlength="8" placeholder="$" /></label>
+                    <label>Descuento (%)<input type="number" id="quoteDiscount" min="0" max="100" step="0.01" value="0" /></label>
+                    <label id="quoteTaxField">Impuesto (%)<input type="number" id="quoteTax" min="0" max="100" step="0.01" value="0" /></label>
+                  </div>
+                  <div class="quote-total-box">
+                    <span>Subtotal <strong id="quoteSubtotal">$0</strong></span>
+                    <span>Descuento <strong id="quoteDiscountTotal">-$0</strong></span>
+                    <span id="quoteTaxRow">Impuesto <strong id="quoteTaxTotal">$0</strong></span>
+                    <span class="quote-grand-total">Total <strong id="quoteGrandTotal">$0</strong></span>
+                  </div>
+                  <label>Alcance / notas<textarea id="quoteNotes" rows="4" maxlength="2000" placeholder="Que incluye el servicio, fechas estimadas, exclusiones..."></textarea></label>
+                  <label>Condiciones comerciales<textarea id="quoteTerms" rows="3" maxlength="2000"></textarea></label>
+                  <label>Forma de pago<textarea id="quotePayment" rows="2" maxlength="1000"></textarea></label>
+                  <label>Estado
+                    <select id="quoteStatus">
+                      <option value="borrador">Borrador</option>
+                      <option value="enviada">Enviada</option>
+                      <option value="aceptada">Aceptada</option>
+                      <option value="rechazada">Rechazada</option>
+                      <option value="vencida">Vencida</option>
+                    </select>
+                  </label>
+                  <div class="quote-actions">
+                    <button class="btn btn-ghost" id="quotePreview">Vista previa</button>
+                    <button class="btn btn-ghost" id="quoteDuplicate">Duplicar</button>
+                    <button class="btn btn-accent" id="quoteSave">Guardar cotizacion</button>
+                    <button class="btn btn-accent quote-download" id="quoteDownload">Descargar PDF</button>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="quote-side">
+                <div class="card quote-history-card">
+                  <div class="quote-card-title">
+                    <h3>Historial</h3>
+                    <span class="quote-count" id="quoteCount">0</span>
+                  </div>
+                  <input type="search" id="quoteSearch" placeholder="Buscar cliente o numero..." />
+                  <div class="quote-history" id="quoteHistory"></div>
+                </div>
+
+                <details class="card quote-settings-card">
+                  <summary>Configurar plantilla PDF</summary>
+                  <p class="muted">El logo, colores y datos de contacto se toman de la seccion Diseno y Contacto.</p>
+                  <label>Validez predeterminada (dias)<input type="number" id="quoteSettingValidity" min="1" max="365" /></label>
+                  <div class="quote-grid-2">
+                    <label>Impuesto predeterminado (%)<input type="number" id="quoteSettingTax" min="0" max="100" step="0.01" /></label>
+                    <label>Nombre del impuesto<input type="text" id="quoteSettingTaxLabel" maxlength="30" /></label>
+                  </div>
+                  <label>Condiciones predeterminadas<textarea id="quoteSettingTerms" rows="4" maxlength="2000"></textarea></label>
+                  <label>Forma de pago predeterminada<textarea id="quoteSettingPayment" rows="3" maxlength="1000"></textarea></label>
+                  <label>Mensaje al pie<input type="text" id="quoteSettingFooter" maxlength="180" /></label>
+                  <button class="btn btn-ghost" id="quoteSaveSettings">Guardar plantilla</button>
+                </details>
+              </aside>
+            </div>
+          </section>
+
           <!-- ===== Antes y despues ===== -->
           <section class="panel" id="tab-beforeafter">
             <h2>Antes y despues</h2>
@@ -516,6 +635,17 @@
       </div>
     </div>
 
+    <div class="quote-preview-modal" id="quotePreviewModal" hidden>
+      <div class="quote-preview-dialog">
+        <div class="quote-preview-head">
+          <div><strong>Vista previa del PDF</strong><span id="quotePreviewPages"></span></div>
+          <button class="btn btn-ghost" id="quotePreviewClose">Cerrar</button>
+        </div>
+        <div class="quote-preview-pages" id="quotePreviewBody"></div>
+      </div>
+    </div>
+
     <script src="admin.js"></script>
+    <script src="admin-quotes.js"></script>
   </body>
 </html>

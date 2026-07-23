@@ -109,6 +109,8 @@ function publicContent() {
     delete clone.quoteForm.recipientEmail;
   }
   delete clone.bookings; // datos privados de clientes
+  delete clone.quotations; // cotizaciones y datos privados de clientes
+  delete clone.quoteSettings; // configuracion interna de documentos
   return clone;
 }
 
@@ -542,6 +544,7 @@ app.put("/api/content", requireAuth, async (req, res) => {
     "services", "testimonials", "beforeAfter", "plans", "clients", "posts",
     "videos", "carousel", "quoteForm", "i18n", "bookingSettings", "decorations",
     "effects", "quoteCalc", "faqs", "sections", "maintenance",
+    "quoteSettings", "quotations",
   ];
   await updateContent((content) => {
     for (const key of allowed) if (body[key] !== undefined) content[key] = body[key];
@@ -778,6 +781,7 @@ app.get("/api/admin/summary", requireAuth, (req, res) => {
       posts: (c.posts || []).length,
       testimonials: (c.testimonials || []).length,
       faqs: (c.faqs || []).length,
+      quotations: (c.quotations || []).length,
     },
     emailEnabled: !!(c.email && c.email.enabled),
     upcoming,
