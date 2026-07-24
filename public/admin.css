@@ -227,7 +227,7 @@ body.is-owner .owner-only { display: block; }
 .tour-overlay:not([hidden]) { pointer-events: auto; }
 .tour-overlay::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.55); transition: opacity 0.3s; }
 .tour-spotlight { position: absolute; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.55); background: transparent; transition: all 0.35s ease; z-index: 1; }
-.tour-tooltip { position: absolute; z-index: 2; background: #fff; border-radius: 14px; padding: 20px 24px; max-width: 360px; width: 90vw; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.4); transition: all 0.35s ease; }
+.tour-tooltip { position: absolute; z-index: 2; background: #fff; border-radius: 14px; padding: 20px 24px; max-width: 380px; width: 90vw; max-height: calc(100vh - 20px); overflow-y: auto; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.4); transition: all 0.35s ease; }
 .tour-text { font-size: 0.95rem; color: #1a1a1a; line-height: 1.5; margin-bottom: 14px; }
 .tour-footer { display: flex; align-items: center; justify-content: space-between; }
 .tour-step { font-size: 0.78rem; color: #888; }
