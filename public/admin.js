@@ -1134,22 +1134,39 @@ async function pollNotifs() {
 }
 
 /* ============================ TOUR GUIADO ============================ */
+const TOUR_VERSION = "2026-07-cotizaciones-pdf";
 const TOUR_STEPS = [
-  { tab: "dashboard", el: "#tab-dashboard", text: "Este es el <b>Resumen</b>: al entrar ves las citas próximas, contadores del sitio y actividad reciente de un vistazo." },
-  { tab: "design", el: "#tab-design .theme-grid", text: "<b>Diseño</b>: elige el tema visual del sitio (clásico, festivo, navideño), personaliza colores y cambia el logo." },
-  { tab: "carousel", el: "#tab-carousel .upload-zone", text: "<b>Carrusel</b>: sube fotos del inicio, arrástralas para reordenar y ajusta su zoom o encuadre." },
-  { tab: "animations", el: "#tab-animations", text: "<b>Animaciones</b>: activa decoraciones flotantes, efectos al hacer scroll y cursores personalizados." },
-  { tab: "content", el: "#tab-content", text: "<b>Textos y servicios</b>: edita el título, la descripción del inicio y administra los servicios que ofreces." },
-  { tab: "plans", el: "#tab-plans", text: "<b>Planes</b>: crea paquetes con precio y características. Marca uno como destacado." },
-  { tab: "quotecalc", el: "#tab-quotecalc", text: "<b>Cotizador</b>: configura precios para que el visitante calcule un estimado al instante." },
-  { tab: "quotes", el: "#tab-quotes", text: "<b>Cotizaciones PDF</b>: arma propuestas con los servicios del proyecto, guarda el historial y descarga documentos listos para enviar." },
-  { tab: "bookings", el: "#tab-bookings", text: "<b>Citas</b>: define disponibilidad (días, horarios) y gestiona las reservas de tus clientes." },
-  { tab: "discounts", el: "#tab-discounts", text: "<b>Descuentos</b>: crea cupones para eventos especiales. Tus clientes los ingresan en el cotizador." },
-  { tab: "email", el: "#tab-email", text: "<b>Correo</b>: configura el SMTP para recibir cotizaciones y que tus clientes reciban confirmación." },
-  { tab: "users", el: "#tab-users", text: "<b>Usuarios</b>: crea cuentas para tu equipo con roles (propietario o editor)." },
-  { tab: "audit", el: "#tab-audit", text: "<b>Registro</b>: historial de todas las acciones realizadas en el panel. Así sabes quién cambió qué." },
+  { tab: "dashboard", el: "#dashStats", text: "<b>Resumen</b>: revisa citas próximas, cotizaciones guardadas, contenido publicado, estado del correo y actividad reciente desde una sola vista." },
+  { tab: "dashboard", el: "#toggleNotifs", text: "<b>Notificaciones</b>: activa avisos del navegador para enterarte de nuevas solicitudes y citas, incluso cuando no estés mirando el panel." },
+  { tab: "design", el: "#tab-design .theme-grid", text: "<b>Diseño</b>: elige entre los temas visuales, personaliza los colores de marca y controla el logo y sus tamaños en cada zona del sitio." },
+  { tab: "carousel", el: "#tab-carousel .upload-zone", text: "<b>Carrusel</b>: sube imágenes o videos, reordénalos arrastrando y ajusta altura, velocidad, encuadre, zoom y textos." },
+  { tab: "animations", el: "#tab-animations .card", text: "<b>Animaciones</b>: configura decoraciones flotantes, velocidad, opacidad, efectos al desplazarse, microinteracciones y cursor temático." },
+  { tab: "sections", el: "#tab-sections .maint-card", text: "<b>Modo mantenimiento</b>: muestra una página temporal a los visitantes mientras sigues trabajando normalmente desde el panel." },
+  { tab: "sections", el: "#sectionsEditor", text: "<b>Secciones del sitio</b>: activa, oculta y reordena cada bloque; también decides cuáles aparecen en el menú principal." },
+  { tab: "content", el: "#tab-content .card", text: "<b>Textos y servicios</b>: edita el inicio, la historia de Mimmo, versiones en inglés y el catálogo de servicios con sus iconos." },
+  { tab: "plans", el: "#tab-plans", text: "<b>Planes y precios</b>: crea paquetes, define precio, periodo y características, y destaca la opción que quieras promocionar." },
+  { tab: "quotecalc", el: "#tab-quotecalc .card", text: "<b>Cotizador instantáneo</b>: configura moneda, precio por unidad, tipos de espacio, frecuencias y extras para que el visitante obtenga un estimado." },
+  { tab: "quotes", el: "#tab-quotes .quote-builder .quote-card:nth-child(1)", text: "<b>Cotizaciones PDF · Cliente</b>: crea un número automático, define vigencia y registra los datos del cliente y la dirección del servicio." },
+  { tab: "quotes", el: "#tab-quotes .quote-builder .quote-card:nth-child(2)", text: "<b>Cotizaciones PDF · Servicios</b>: agrega espacios, extras, planes o servicios del catálogo; también puedes crear partidas personalizadas y editar cantidades, unidades y precios." },
+  { tab: "quotes", el: "#tab-quotes .quote-builder .quote-card:nth-child(3)", text: "<b>Cotizaciones PDF · Totales</b>: aplica descuentos e impuestos, agrega alcance, condiciones, forma de pago y estado; luego guarda, duplica, previsualiza o descarga el PDF." },
+  { tab: "quotes", el: "#tab-quotes .quote-side", text: "<b>Cotizaciones PDF · Historial y plantilla</b>: busca propuestas anteriores y personaliza la vigencia, impuesto, condiciones, forma de pago y mensaje final de la plantilla." },
+  { tab: "beforeafter", el: "#tab-beforeafter", text: "<b>Antes y después</b>: publica comparaciones de trabajos reales con fotografía inicial, resultado final y una descripción del caso." },
+  { tab: "testimonials", el: "#tab-testimonials", text: "<b>Testimonios</b>: administra opiniones, valoración, cargo y fotografía de clientes para reforzar la confianza en el sitio." },
+  { tab: "clients", el: "#tab-clients", text: "<b>Clientes</b>: agrega nombres y logos de empresas o personas que han confiado en Mimmo y ordénalos como prefieras." },
+  { tab: "videos", el: "#tab-videos .upload-zone", text: "<b>Galería de videos</b>: sube demostraciones o resultados, añade descripciones y organiza el orden en que se muestran." },
+  { tab: "blog", el: "#tab-blog", text: "<b>Blog y tips</b>: crea artículos con fecha, portada, resumen y contenido para compartir consejos y novedades." },
+  { tab: "faq", el: "#faqEditor", text: "<b>Preguntas frecuentes</b>: responde las dudas más comunes y reordena las preguntas para facilitar la decisión del cliente." },
+  { tab: "contact", el: "#tab-contact .card", text: "<b>Contacto</b>: actualiza teléfono, WhatsApp, correo, dirección, horario, mapa y redes sociales visibles en el sitio." },
+  { tab: "bookings", el: "#tab-bookings .card", text: "<b>Citas</b>: define días disponibles, horarios, duración y anticipación; después confirma, completa, cancela o elimina reservas." },
+  { tab: "discounts", el: "#tab-discounts .card", text: "<b>Descuentos</b>: crea cupones porcentuales o fijos con vigencia, límite de usos, mensaje promocional y estado activo." },
+  { tab: "email", el: "#tab-email .card", text: "<b>Correo</b>: configura el servidor SMTP, prueba la conexión y personaliza los mensajes de cotización y confirmación." },
+  { tab: "users", el: "#tab-users", ownerOnly: true, text: "<b>Usuarios y roles</b>: como propietario puedes crear cuentas para tu equipo, asignar permisos y actualizar o eliminar accesos." },
+  { tab: "audit", el: "#tab-audit", text: "<b>Registro de cambios</b>: consulta quién realizó cada acción y cuándo ocurrió. Con esto terminamos el recorrido por todo el panel." },
 ];
 let _tourIdx = -1;
+function availableTourSteps() {
+  return TOUR_STEPS.filter((step) => !step.ownerOnly || (ME && ME.role === "owner"));
+}
 
 function startTour() {
   _tourIdx = 0;
@@ -1159,30 +1176,39 @@ function startTour() {
 function endTour() {
   _tourIdx = -1;
   $("tourOverlay").hidden = true;
-  localStorage.setItem("mimmo_tour_done", "1");
+  localStorage.setItem("mimmo_tour_done", TOUR_VERSION);
 }
 function showTourStep() {
-  if (_tourIdx < 0 || _tourIdx >= TOUR_STEPS.length) { endTour(); return; }
-  const step = TOUR_STEPS[_tourIdx];
+  const steps = availableTourSteps();
+  if (_tourIdx < 0 || _tourIdx >= steps.length) { endTour(); return; }
+  const step = steps[_tourIdx];
   // navegar a la pestaña correspondiente
   const navBtn = [...document.querySelectorAll(".snav")].find((b) => b.dataset.tab === step.tab);
-  if (navBtn) navBtn.click();
-  // esperar un frame para que el panel se muestre
-  requestAnimationFrame(() => {
+  if (navBtn && !navBtn.classList.contains("active")) navBtn.click();
+  // centrar el bloque y esperar a que el panel termine de mostrarse
+  requestAnimationFrame(() => requestAnimationFrame(() => {
     const target = document.querySelector(step.el);
     const spotlight = $("tourSpotlight");
     const tooltip = $("tourTooltip");
+    $("tourText").innerHTML = step.text;
+    $("tourStep").textContent = `${_tourIdx + 1} / ${steps.length}`;
+    $("tourPrev").hidden = _tourIdx === 0;
+    $("tourNext").textContent = _tourIdx === steps.length - 1 ? "Finalizar" : "Siguiente";
+    const tooltipHeight = Math.max(175, tooltip.offsetHeight || 0);
     if (target) {
+      target.scrollIntoView({ behavior: "auto", block: "center", inline: "nearest" });
       const rect = target.getBoundingClientRect();
       const pad = 8;
-      spotlight.style.top = (rect.top - pad) + "px";
-      spotlight.style.left = (rect.left - pad) + "px";
-      spotlight.style.width = (rect.width + pad * 2) + "px";
-      spotlight.style.height = Math.min(rect.height + pad * 2, window.innerHeight * 0.6) + "px";
+      const top = Math.max(8, rect.top - pad);
+      const left = Math.max(8, rect.left - pad);
+      spotlight.style.top = top + "px";
+      spotlight.style.left = left + "px";
+      spotlight.style.width = Math.min(rect.width + pad * 2, window.innerWidth - left - 8) + "px";
+      spotlight.style.height = Math.min(rect.height + pad * 2, window.innerHeight * 0.58, window.innerHeight - top - 8) + "px";
       // posicionar tooltip debajo o arriba del spotlight
-      const below = rect.bottom + 20;
-      const above = rect.top - 180;
-      if (below + 180 < window.innerHeight) {
+      const below = Math.min(rect.bottom, top + window.innerHeight * 0.58) + 18;
+      const above = top - tooltipHeight - 18;
+      if (below + tooltipHeight < window.innerHeight - 10) {
         tooltip.style.top = below + "px";
         tooltip.style.bottom = "";
       } else {
@@ -1195,12 +1221,10 @@ function showTourStep() {
       spotlight.style.width = "60%"; spotlight.style.height = "200px";
       tooltip.style.top = "55%"; tooltip.style.left = "20%";
     }
-    $("tourText").innerHTML = step.text;
-    $("tourStep").textContent = `${_tourIdx + 1} / ${TOUR_STEPS.length}`;
-    $("tourNext").textContent = _tourIdx === TOUR_STEPS.length - 1 ? "Finalizar" : "Siguiente";
-  });
+  }));
 }
 $("tourNext").addEventListener("click", () => { _tourIdx++; showTourStep(); });
+$("tourPrev").addEventListener("click", () => { if (_tourIdx > 0) _tourIdx--; showTourStep(); });
 $("tourSkip").addEventListener("click", endTour);
 $("startTour").addEventListener("click", startTour);
 // Cerrar tour con Escape
@@ -1208,7 +1232,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && _tourIdx
 
 // Auto-iniciar en la primera visita del usuario
 function maybeAutoTour() {
-  if (!localStorage.getItem("mimmo_tour_done")) {
+  if (localStorage.getItem("mimmo_tour_done") !== TOUR_VERSION) {
     setTimeout(startTour, 600);
   }
 }
